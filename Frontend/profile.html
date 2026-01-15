@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Campus Connect - Profile</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="feed.css" />
+  <link rel="stylesheet" href="skeleton.css" />
+  <link rel="stylesheet" href="profile.css" />
+  <style>
+    body.loading .profile-shell {visibility:hidden;}
+  </style>
+</head>
+<body class="dark-theme profile-page loading">
+  <!-- Home Button -->
+  <a href="feed.html" class="home-button" aria-label="Go to home feed" title="Home">
+    <i class="fas fa-house" aria-hidden="true"></i>
+  </a>
+  <div class="skeleton-overlay generic" style="padding:2rem 1.2rem 3rem; max-width:1150px; margin:0 auto;">
+    <div class="skel-stack">
+      <div class="skel-row">
+        <div class="skel-avatar" style="width:170px; height:170px; border-radius:50%;"></div>
+        <div class="skel-stack" style="flex:1; gap:.9rem;">
+          <div class="skel-bar w-50 tall"></div>
+          <div class="skel-row"><div class="skel-pill"></div><div class="skel-pill"></div><div class="skel-pill"></div></div>
+          <div class="skel-row"><div class="skel-bar w-70"></div><div class="skel-bar w-40"></div></div>
+          <div class="skel-bar w-60"></div>
+        </div>
+      </div>
+      <div class="skel-card-grid" style="grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); margin-top:2rem;">
+        <div class="skel-card"></div><div class="skel-card"></div><div class="skel-card"></div><div class="skel-card"></div>
+      </div>
+    </div>
+  </div>
+  <div class="profile-shell">
+    <header class="profile-header">
+      <div class="profile-avatar-wrap">
+        <div class="profile-avatar"><img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop&crop=face" alt="User avatar"></div>
+      </div>
+      <div class="profile-core">
+        <div class="profile-topline">
+          <h1 class="profile-username"><span id="displayName">prajwal_shobha</span>
+            <span class="badge-verified creative" aria-label="Verified account" title="Verified account">
+              <span class="badge-ring" aria-hidden="true"></span>
+              <span class="badge-core" aria-hidden="true">
+                <svg viewBox="0 0 24 24" class="badge-check" aria-hidden="true" focusable="false">
+                  <path d="M9.2 16.4 5.4 12.6 6.8 11.2 9.2 13.6 17.2 5.6 18.6 7z" fill="currentColor"/>
+                </svg>
+              </span>
+              <span class="badge-sparkle s1" aria-hidden="true"></span>
+              <span class="badge-sparkle s2" aria-hidden="true"></span>
+              <span class="badge-sparkle s3" aria-hidden="true"></span>
+              <span class="sr-only">Verified</span>
+            </span>
+          </h1>
+        </div>
+        
+        <div class="profile-stats" id="profileStats">
+          <div class="stat"><strong id="statPosts">--</strong><span>Posts</span></div>
+          <div class="stat"><strong id="statFollowers">--</strong><span>Followers</span></div>
+            <div class="stat"><strong id="statFollowing">--</strong><span>Following</span></div>
+        </div>
+        <div class="profile-actions below-name">
+          <button id="shareBtn"><i class="fas fa-share-alt"></i> Share</button>
+          <button id="editProfileBtn"><i class="fas fa-pen"></i> Edit Profile</button>
+          <button id="moreBtn"><i class="fas fa-ellipsis"></i></button>
+        </div>
+        <div class="profile-bio">
+          <strong id="profileNameLine">Prajwal S</strong>
+          <span>Building campus communities. Tech + Design + Esports + Events.</span>
+          <a href="https://example.com" target="_blank" rel="noopener">example.com</a>
+          <span class="handle" id="userHandle">@prajwal</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="highlights">
+      <div class="highlights-bar" id="highlightsBar" aria-label="Profile highlights"></div>
+    </section>
+
+    <div class="profile-tabs-wrapper">
+      <div class="profile-tabs" id="profileTabs" role="tablist">
+        <button class="profile-tab active" data-tab="posts" role="tab" aria-selected="true" aria-controls="panel-posts" id="tab-posts"><i class="fas fa-table-cells"></i> Posts</button>
+        <button class="profile-tab" data-tab="reels" role="tab" aria-selected="false" aria-controls="panel-reels" id="tab-reels"><i class="fas fa-play"></i> Reels</button>
+        <button class="profile-tab" data-tab="tagged" role="tab" aria-selected="false" aria-controls="panel-tagged" id="tab-tagged"><i class="fas fa-user-tag"></i> Tagged</button>
+        <span class="tab-indicator" id="tabIndicator"></span>
+      </div>
+    </div>
+
+    <section class="tab-panel active" id="panel-posts" aria-label="Posts grid">
+      <div class="posts-grid" id="postsGrid"></div>
+    </section>
+    <section class="tab-panel" id="panel-reels" aria-label="Reels grid">
+      <div class="reels-grid" id="reelsGrid"></div>
+    </section>
+    <section class="tab-panel" id="panel-tagged" aria-label="Tagged media">
+      <div class="tagged-grid" id="taggedGrid"></div>
+    </section>
+  </div>
+
+  <script src="skeleton.js"></script>
+  <script>
+    const DEFAULT_API = 'http://localhost:5000';
+    const API_BASE = (location.origin && location.origin.includes('localhost:5000')) ? location.origin : DEFAULT_API;
+    // Editable profile data persistence key
+    const PROFILE_STORAGE_KEY = 'profileData';
+
+    const statPosts = document.getElementById('statPosts');
+    const statFollowers = document.getElementById('statFollowers');
+    const statFollowing = document.getElementById('statFollowing');
+  // favorites/saved counters removed from header UI
+    const postsGrid = document.getElementById('postsGrid');
+    const reelsGrid = document.getElementById('reelsGrid');
+    const taggedGrid = document.getElementById('taggedGrid');
+    const highlightsBar = document.getElementById('highlightsBar');
+    const tabIndicator = document.getElementById('tabIndicator');
+    const displayNameEl = document.getElementById('displayName');
+    const profileNameLine = document.getElementById('profileNameLine');
+    const userHandleEl = document.getElementById('userHandle');
+
+    let profileData = {
+      displayName: '',
+      fullName: '',
+      username: '',
+      phone: '',
+      email: '',
+      favorites: [],
+      savedVideos: []
+    };
+
+    function loadProfileData(){
+      try {
+        const stored = localStorage.getItem(PROFILE_STORAGE_KEY);
+        if(stored){
+          const parsed = JSON.parse(stored);
+          profileData = {...profileData, ...parsed};
+        }
+      } catch {}
+      applyProfileDataToUI();
+      loadUserPosts();
+    }
+
+    function saveProfileData(){
+      localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profileData));
+    }
+
+    function applyProfileDataToUI(){
+      if(displayNameEl) displayNameEl.textContent = (profileData.displayName || profileData.username || '').trim() || 'user';
+      if(profileNameLine) profileNameLine.textContent = (profileData.fullName || profileData.displayName || profileData.username || 'User');
+      if(userHandleEl) userHandleEl.textContent = '@' + ((profileData.username||'user'));
+  // counters removed from header UI
+    }
+
+    // Load user posts from backend if logged in
+    const authToken = localStorage.getItem('authToken');
+    let currentUser = null;
+    try { const stored = localStorage.getItem('currentUser'); if(stored) currentUser = JSON.parse(stored); } catch{}
+    async function loadUserPosts(){
+      if(!currentUser?.id) return; // needs backend ID
+      try {
+        const headers = {};
+        const token = localStorage.getItem('authToken');
+        if(token) headers['Authorization']='Bearer '+token;
+  const res = await fetch(API_BASE + `/api/users/${currentUser.id}/posts`, { headers });
+        if(res.status === 403){
+          const msg = (await res.json())?.message || 'This account is private. Follow to see posts.';
+          if(postsGrid){ postsGrid.innerHTML = `<div class="private-note" style="padding:1.2rem; margin:1rem auto; max-width:520px; text-align:center; background:#14181d; border:1px solid #232b33; border-radius:12px; color:#aebdca;">${msg}</div>`; }
+          if(statPosts) statPosts.textContent = '0';
+          return 0;
+        }
+        const data = await res.json();
+        if(!data.success) return;
+        renderUserPosts(data.posts);
+        let count = data.posts.length || 0;
+        if(statPosts) statPosts.textContent = count;
+        // If new post just created, ensure it appears (may already be in list if backend returned)
+        try {
+          const just = localStorage.getItem('justCreatedPost');
+          if(just){
+            const p = JSON.parse(just);
+            if(p && p.user_id === currentUser.id){
+              // If not already present, prepend
+              if(!postsGrid.querySelector(`.grid-item[data-id="${p.id}"]`)){
+                const wrapper = document.createElement('div');
+                const mediaHtml = p.media_type === 'video'
+                  ? '<video src="'+p.media_url+'" muted playsinline></video>'
+                  : '<img src="'+p.media_url+'" alt="post media"/>';
+                wrapper.innerHTML = '<div class="grid-item" data-id="'+p.id+'">'+mediaHtml+'</div>';
+                postsGrid.insertBefore(wrapper.firstElementChild, postsGrid.firstElementChild);
+                count = count + 1;
+                if(statPosts) statPosts.textContent = count;
+              }
+            }
+            localStorage.removeItem('justCreatedPost');
+          }
+        } catch(err){ console.warn('profile inject new post failed', err); }
+        return count;
+      } catch(err){ console.warn('Failed loading user posts', err); return 0; }
+    }
+    function renderUserPosts(posts){
+      if(!postsGrid) return;
+      postsGrid.innerHTML = posts.map(p=>`<div class="grid-item" data-id="${p.id}">
+          ${p.media_type==='video'?`<video src="${p.media_url}" muted playsinline></video>`:`<img src="${p.media_url}" alt="post media"/>`}
+        </div>`).join('');
+    }
+
+    function openEditModal(){
+      let modal = document.getElementById('editProfileModal');
+      if(!modal){
+        modal = document.createElement('div');
+        modal.id = 'editProfileModal';
+        modal.className = 'edit-modal open';
+        modal.innerHTML = `
+          <div class="edit-modal-backdrop" data-close="1"></div>
+          <div class="edit-modal-panel" role="dialog" aria-modal="true" aria-labelledby="editProfileTitle">
+            <div class="edit-modal-header">
+              <h3 id="editProfileTitle">Edit Profile</h3>
+              <button class="close-edit" data-close="1" aria-label="Close edit profile">&times;</button>
+            </div>
+            <form id="editProfileForm" class="edit-form" novalidate>
+              <div class="form-grid">
+                <label>Display Name<input type="text" name="displayName" required minlength="2"></label>
+                <label>Full Name<input type="text" name="fullName" required minlength="2"></label>
+                <label>Username<input type="text" name="username" pattern="^[a-zA-Z0-9_.]{3,20}$" required></label>
+                <label>Phone<input type="tel" name="phone" pattern="^[0-9+() -]{7,18}$" placeholder="+91 00000 00000"></label>
+                <label>Email<input type="email" name="email" placeholder="you@example.com"></label>
+              </div>
+              <label>Favorites (comma separated)<textarea name="favorites" rows="2" placeholder="music, coding, gaming"></textarea></label>
+              <label>Saved Videos (one URL per line)<textarea name="savedVideos" rows="3" placeholder="https://...\nhttps://..."></textarea></label>
+              <div class="edit-actions">
+                <button type="button" class="btn ghost" data-close="1">Cancel</button>
+                <button type="submit" class="btn primary">Save Changes</button>
+              </div>
+            </form>
+          </div>`;
+        document.body.appendChild(modal);
+        wireEditModal(modal);
+      } else {
+        modal.classList.add('open');
+      }
+      // Prefill
+      const form = modal.querySelector('#editProfileForm');
+      if(form){
+        form.displayName.value = profileData.displayName;
+        form.fullName.value = profileData.fullName;
+        form.username.value = profileData.username;
+        form.phone.value = profileData.phone;
+        form.email.value = profileData.email;
+        form.favorites.value = profileData.favorites.join(', ');
+        form.savedVideos.value = profileData.savedVideos.join('\n');
+      }
+      // Focus first field after opening
+      setTimeout(()=>{form?.displayName?.focus();},50);
+    }
+
+    function closeEditModal(){
+      const modal = document.getElementById('editProfileModal');
+      if(modal) modal.classList.remove('open');
+    }
+
+    function wireEditModal(modal){
+      modal.addEventListener('click', (e)=>{
+        if(e.target.matches('[data-close]')) closeEditModal();
+      });
+      const form = modal.querySelector('#editProfileForm');
+      form.addEventListener('submit', (e)=>{
+        e.preventDefault();
+        const data = new FormData(form);
+        const displayName = data.get('displayName').toString().trim();
+        const fullName = data.get('fullName').toString().trim();
+        const username = data.get('username').toString().trim();
+        if(!displayName || !fullName || !username){
+          form.classList.add('invalid');
+          return;
+        }
+        profileData.displayName = displayName;
+        profileData.fullName = fullName;
+        profileData.username = username;
+        profileData.phone = data.get('phone').toString().trim();
+        profileData.email = data.get('email').toString().trim();
+        const favRaw = data.get('favorites').toString();
+        profileData.favorites = favRaw.split(',').map(f=>f.trim()).filter(Boolean);
+        const savedRaw = data.get('savedVideos').toString();
+        profileData.savedVideos = savedRaw.split(/\n+/).map(l=>l.trim()).filter(Boolean);
+        saveProfileData();
+        applyProfileDataToUI();
+        closeEditModal();
+      });
+    }
+
+    document.addEventListener('click', (e)=>{
+      if(e.target.id === 'editProfileBtn'){
+        openEditModal();
+      }
+    });
+
+    // Simulated data
+    const posts = Array.from({length:18}).map((_,i)=>({
+      id:i+1,
+      img:`https://picsum.photos/seed/p${i+1}/600/600`,
+      likes: Math.floor(Math.random()*900)+50,
+      comments: Math.floor(Math.random()*120)+2
+    }));
+    const reels = Array.from({length:10}).map((_,i)=>({
+      id:i+1,
+      cover:`https://picsum.photos/seed/r${i+1}/400/700`,
+      plays: Math.floor(Math.random()*5000)+500,
+      likes: Math.floor(Math.random()*2000)+100
+    }));
+    const tagged = Array.from({length:8}).map((_,i)=>({
+      id:i+1,
+      img:`https://picsum.photos/seed/t${i+4}/600/600`,
+      tagged: Math.floor(Math.random()*3)+1
+    }));
+    const highlights = [
+      {title:'HackFest', img:'https://picsum.photos/seed/h1/200/200'},
+      {title:'Design', img:'https://picsum.photos/seed/h2/200/200'},
+      {title:'Esports', img:'https://picsum.photos/seed/h3/200/200'},
+      {title:'Culture', img:'https://picsum.photos/seed/h4/200/200'},
+      {title:'Athletics', img:'https://picsum.photos/seed/h5/200/200'},
+      {title:'Clubs', img:'https://picsum.photos/seed/h6/200/200'},
+      {title:'More', img:'https://picsum.photos/seed/h7/200/200'}
+    ];
+
+    function animateNumber(el, target){
+      const duration = 900; const t0 = performance.now();
+      function step(now){
+        const p = Math.min(1, (now - t0)/duration);
+        const eased = p<.5? 2*p*p : -1+(4-2*p)*p;
+        el.textContent = Math.floor(eased*target);
+        if(p<1) requestAnimationFrame(step); else el.textContent = target.toLocaleString();
+      }
+      requestAnimationFrame(step);
+    }
+
+    function renderPosts(){
+      postsGrid.innerHTML = posts.map((p,i)=>`<div class="post-card" data-kind="post" data-idx="${i}" tabindex="0"><img src="${p.img}" alt="Post ${p.id}"><div class="post-overlay"><span><i class='fas fa-heart'></i>${p.likes}</span><span><i class='fas fa-comment'></i>${p.comments}</span></div></div>`).join('');
+    }
+    function renderReels(){
+      reelsGrid.innerHTML = reels.map((r,i)=>`<div class="reel-card" data-kind="reel" data-idx="${i}" tabindex="0"><img src="${r.cover}" alt="Reel ${r.id}"><div class="reel-meta"><h5>Reel ${r.id}</h5><div class="reel-stats"><span><i class='fas fa-play'></i>${r.plays}</span><span><i class='fas fa-heart'></i>${r.likes}</span></div></div></div>`).join('');
+    }
+    function renderTagged(){
+      taggedGrid.innerHTML = tagged.map(t=>`<div class="tagged-card"><img src="${t.img}" alt="Tagged ${t.id}"><span class="tag-badge">${t.tagged} TAG</span></div>`).join('');
+    }
+    function renderHighlights(){
+      highlightsBar.innerHTML = '<div class="highlight add" id="addHighlight"><div class="highlight-ring"><span></span><div class="plus">+</div></div><label>NEW</label></div>' +
+        highlights.map(h=>`<div class="highlight"><div class="highlight-ring"><span></span><img src="${h.img}" alt="${h.title}"></div><label>${h.title}</label></div>`).join('');
+    }
+
+    function setupTabs(){
+      const tabs = document.querySelectorAll('.profile-tab');
+      function recalcIndicator(active){
+        const rect = active.getBoundingClientRect();
+        const parent = active.parentElement.getBoundingClientRect();
+        tabIndicator.style.width = rect.width + 'px';
+        tabIndicator.style.transform = `translateX(${rect.left - parent.left}px)`;
+      }
+      tabs.forEach(tab=>tab.addEventListener('click', ()=>{
+        if(tab.classList.contains('active')) return;
+        tabs.forEach(t=>{t.classList.remove('active'); t.setAttribute('aria-selected','false');});
+        tab.classList.add('active'); tab.setAttribute('aria-selected','true');
+        document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+        document.getElementById('panel-'+tab.dataset.tab).classList.add('active');
+        recalcIndicator(tab);
+        if(tab.dataset.tab==='reels' && !reelsGrid.childElementCount) renderReels();
+        if(tab.dataset.tab==='tagged' && !taggedGrid.childElementCount) renderTagged();
+      }));
+      setTimeout(()=>{ const active = document.querySelector('.profile-tab.active'); if(active) recalcIndicator(active); }, 50);
+      window.addEventListener('resize', ()=>{ const active = document.querySelector('.profile-tab.active'); if(active) recalcIndicator(active); });
+    }
+
+    async function loadProfileFromBackend(){
+      try {
+        let user = null;
+        if(authToken){
+          const res = await fetch(API_BASE + '/api/verify-token', { headers:{ 'Authorization': 'Bearer ' + authToken } });
+          const data = await res.json();
+          if(data?.success && data.user){ user = data.user; }
+        }
+        // Fallback to /api/me if token verified; else public by id
+        if(!user && authToken){
+          const res = await fetch(API_BASE + '/api/me', { headers:{ 'Authorization': 'Bearer ' + authToken } });
+          const data = await res.json();
+          if(data?.success && data.user) user = data.user;
+        }
+        if(!user && currentUser?.id){
+          const res = await fetch(API_BASE + `/api/user/${currentUser.id}`);
+          const data = await res.json();
+          if(data?.success && data.user) user = data.user;
+        }
+        if(user){
+          // Normalize keys from backend to profileData
+          profileData.username = user.username || profileData.username;
+          profileData.fullName = user.full_name || user.fullName || profileData.fullName;
+          profileData.displayName = user.username || profileData.displayName || user.full_name || '';
+          profileData.phone = user.phone || profileData.phone;
+          profileData.email = user.email || profileData.email;
+          saveProfileData();
+          applyProfileDataToUI();
+          // Load stats for this user (posts/followers/following)
+          const tId = currentUser?.id || user.id;
+          try {
+            const r = await fetch(API_BASE + '/api/users/'+tId+'/stats');
+            const d = await r.json();
+            if(d?.success && d.stats){
+              if(statPosts) statPosts.textContent = d.stats.posts;
+              if(statFollowers) statFollowers.textContent = d.stats.followers;
+              if(statFollowing) statFollowing.textContent = d.stats.following;
+            }
+          } catch {}
+        }
+      } catch(err){ console.warn('Failed to load profile from backend', err); }
+    }
+
+    async function ensureLoggedInOrRedirect(){
+      if(!currentUser || !currentUser.id){
+        // For viewing other public profiles, allow access without auth; for own profile, redirect
+        const params = new URLSearchParams(location.search);
+        const qUser = params.get('user') || params.get('id');
+        if(qUser){ return true; }
+        window.location.href = 'index.html';
+        return false;
+      }
+      return true;
+    }
+
+    async function init(){
+      const params = new URLSearchParams(location.search);
+      const viewByUsername = params.get('user');
+      const viewById = params.get('id');
+      const ok = await ensureLoggedInOrRedirect(); if(!ok) return;
+      await loadProfileFromBackend();
+      // If a user param is provided, switch context to that user
+      if(viewByUsername || viewById){
+        try {
+          let t = null;
+          if(viewByUsername){
+            const r = await fetch(API_BASE + '/api/users/by-username/' + encodeURIComponent(viewByUsername));
+            const d = await r.json(); if(d?.success) t=d.user;
+          } else if(viewById){
+            const r = await fetch(API_BASE + '/api/user/' + encodeURIComponent(viewById));
+            const d = await r.json(); if(d?.success) t=d.user;
+          }
+          if(t){
+            profileData.username = t.username; profileData.displayName = t.username; profileData.fullName = t.full_name || t.username;
+            saveProfileData(); applyProfileDataToUI();
+            // If viewing other user, set currentUser.id to target for posts rendering and follow controls
+            currentUser = { id: t.id, username: t.username };
+            await initFollowControls();
+          }
+        } catch(e){ console.warn('Failed to resolve target profile', e); }
+      }
+      renderHighlights();
+      const count = await loadUserPosts();
+      // If no backend posts or endpoint unavailable, fallback to simulated demo posts
+      if(!count){
+        renderPosts();
+        if(statPosts) statPosts.textContent = posts.length;
+      }
+      setupTabs();
+      animateNumber(statPosts, Number(statPosts?.textContent)||0);
+      animateNumber(statFollowers, 12400);
+      animateNumber(statFollowing, 388);
+      setTimeout(()=>{ document.body.classList.remove('loading'); document.querySelector('.skeleton-overlay')?.remove(); }, 300);
+      setupMediaViewerInteractions();
+      // If owner, render follow requests panel
+      try {
+        const me = (function(){ try { return JSON.parse(localStorage.getItem('currentUser')||'null'); } catch { return null; } })();
+        if(me?.id && Number(me.id) === Number(currentUser?.id)){
+          await renderFollowRequestsPanel();
+        }
+      } catch {}
+    }
+
+    async function renderFollowRequestsPanel(){
+      try {
+        const token = localStorage.getItem('authToken');
+        if(!token) return;
+  const r = await fetch(API_BASE + '/api/follow/requests', { headers:{ 'Authorization':'Bearer '+token } });
+        const d = await r.json(); if(!d?.success) return;
+        const list = d.requests || [];
+        const section = document.createElement('section');
+        section.className = 'tab-panel';
+        section.innerHTML = `
+          <div class="requests-panel" style="max-width:860px; margin:1rem auto; background:#14181d; border:1px solid #232b33; border-radius:12px; padding:1rem;">
+            <h3 style="margin:.2rem 0 1rem; font-size:.95rem;">Follow Requests</h3>
+            <div id="requestsList">${list.map(req=>`
+              <div class="req-item" data-id="${req.id}" style="display:flex; align-items:center; gap:.75rem; padding:.45rem 0; border-bottom:1px solid #1f252b;">
+                <img src="https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(req.username)}" alt="${req.username}" style="width:36px; height:36px; border-radius:10px; background:#222;">
+                <div style="flex:1;">
+                  <div style="font-weight:600; font-size:.82rem;">@${req.username}</div>
+                  <div style="font-size:.68rem; color:#9eb0bf;">${req.full_name||''}</div>
+                </div>
+                <button class="btn-accept" data-accept="${req.id}" style="background:#234; color:#d8e5f0; border:1px solid #2a3b4a; border-radius:8px; padding:.35rem .7rem; font-size:.68rem;">Accept</button>
+                <button class="btn-decline" data-decline="${req.id}" style="background:#281f1f; color:#f0d8d8; border:1px solid #3b2a2a; border-radius:8px; padding:.35rem .7rem; font-size:.68rem;">Decline</button>
+              </div>
+            `).join('')}
+            </div>
+          </div>`;
+        document.querySelector('.profile-shell')?.appendChild(section);
+        section.addEventListener('click', async (e)=>{
+          const acc = e.target.closest('[data-accept]');
+          const dec = e.target.closest('[data-decline]');
+          if(acc){
+            const id = acc.getAttribute('data-accept');
+            await fetch(API_BASE + '/api/follow/'+id+'/accept', { method:'POST', headers:{ 'Authorization':'Bearer '+token } });
+            section.querySelector(`.req-item[data-id="${id}"]`)?.remove();
+            // bump followers count
+            if(statFollowers) statFollowers.textContent = (parseInt(statFollowers.textContent)||0) + 1;
+          } else if(dec){
+            const id = dec.getAttribute('data-decline');
+            await fetch(API_BASE + '/api/follow/'+id+'/decline', { method:'POST', headers:{ 'Authorization':'Bearer '+token } });
+            section.querySelector(`.req-item[data-id="${id}"]`)?.remove();
+          }
+        });
+      } catch(err){ console.warn('Render requests panel failed', err); }
+    }
+
+    // Follow button logic (for viewing others)
+    // Toast helper
+    function ensureToastHost(){
+      let host = document.getElementById('toastHost');
+      if(!host){ host = document.createElement('div'); host.id='toastHost'; host.style.cssText='position:fixed; top:10px; left:50%; transform:translateX(-50%); z-index:9999; display:flex; flex-direction:column; gap:8px;'; document.body.appendChild(host);} return host;
+    }
+    function showToast(message){
+      const host = ensureToastHost();
+      const t = document.createElement('div');
+      t.textContent = message;
+      t.style.cssText = 'background:#111b24; color:#dbe7f3; border:1px solid #1f2b35; padding:.55rem .8rem; border-radius:10px; box-shadow:0 8px 28px rgba(0,0,0,.35); opacity:0; transform:translateY(-6px); transition:opacity .2s, transform .2s;';
+      host.appendChild(t);
+      requestAnimationFrame(()=>{ t.style.opacity='1'; t.style.transform='translateY(0)'; });
+      setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateY(-6px)'; setTimeout(()=> t.remove(), 250); }, 3000);
+    }
+
+    async function initFollowControls(){
+      try {
+        const me = (function(){ try { return JSON.parse(localStorage.getItem('currentUser')||'null'); } catch { return null; } })();
+        if(!currentUser?.id || !me?.id || Number(currentUser.id)===Number(me.id)) return;
+        const container = document.querySelector('.profile-actions');
+        if(!container) return;
+        let btn = container.querySelector('#followBtn');
+        if(!btn){ btn = document.createElement('button'); btn.id='followBtn'; btn.className='btn-follow'; btn.textContent='Follow'; container.insertBefore(btn, container.firstChild); }
+        const token = localStorage.getItem('authToken');
+        async function refresh(){
+          const r = await fetch(API_BASE + '/api/follow/status/'+currentUser.id, { headers: token? { 'Authorization':'Bearer '+token }:{} });
+          const d = await r.json(); const s=d?.status||'none';
+          btn.dataset.state = s;
+          let label = 'Follow';
+          if(s==='following') label = 'Following';
+          else if(s==='requested') label = 'Requested';
+          btn.textContent = label;
+        }
+        await refresh();
+        btn.addEventListener('click', async ()=>{
+          const state = btn.dataset.state||'none';
+          try {
+            if(state==='following'){
+              const r = await fetch(API_BASE + '/api/follow/'+currentUser.id, { method:'DELETE', headers: token? { 'Authorization':'Bearer '+token }:{} });
+              if(r.ok){ btn.dataset.state='none'; btn.textContent='Follow'; showToast('Unfollowed user'); }
+            } else if(state==='requested'){
+              const r = await fetch(API_BASE + '/api/follow/'+currentUser.id, { method:'DELETE', headers: token? { 'Authorization':'Bearer '+token }:{} });
+              if(r.ok){ btn.dataset.state='none'; btn.textContent='Follow'; showToast('Follow request canceled'); }
+            } else {
+              const r = await fetch(API_BASE + '/api/follow/'+currentUser.id, { method:'POST', headers: token? { 'Authorization':'Bearer '+token }:{} });
+              const d = await r.json();
+              if(d?.status==='requested'){ btn.dataset.state='requested'; btn.textContent='Requested'; showToast('Follow request sent'); }
+              else { btn.dataset.state='following'; btn.textContent='Following'; showToast('You are now following'); }
+            }
+          } catch(err){ console.warn('Follow action failed', err); }
+        });
+      } catch(err){ console.warn('Follow controls init failed', err); }
+    }
+
+    /* Media Viewer Logic */
+    function ensureMediaViewer(){
+      let mv = document.querySelector('.media-viewer');
+      if(!mv){
+        mv = document.createElement('div');
+        mv.className = 'media-viewer';
+        mv.innerHTML = `
+          <div class="media-viewer-panel" role="dialog" aria-modal="true" aria-label="Media viewer">
+            <div class="media-viewer-media" id="viewerMedia"></div>
+            <div class="media-viewer-sidebar" id="viewerSide">
+              <div class="media-viewer-header">
+                <h4 id="viewerTitle">Media</h4>
+                <div class="media-actions">
+                  <button class="icon-btn-lite" id="viewerLike"><i class="fas fa-heart"></i><span class="lbl">Like</span></button>
+                  <button class="icon-btn-lite" id="viewerSave"><i class="fas fa-bookmark"></i><span class="lbl">Save</span></button>
+                </div>
+              </div>
+              <div class="media-meta" id="viewerMeta"></div>
+              <p class="media-description" id="viewerDesc"></p>
+              <hr>
+              <div class="media-comments" id="viewerComments">
+                <ul class="media-comments-list" id="viewerCommentsList"></ul>
+                <form class="media-comment-form" id="viewerCommentForm" aria-label="Add comment">
+                  <input type="text" id="viewerCommentInput" placeholder="Add a comment..." maxlength="180" required>
+                  <button type="submit" aria-label="Post comment"><i class="fas fa-paper-plane"></i></button>
+                </form>
+              </div>
+            </div>
+            <button class="media-close" id="viewerClose" aria-label="Close media viewer">&times;</button>
+            <button class="media-nav-btn prev" id="viewerPrev" aria-label="Previous media"><i class="fas fa-chevron-left"></i></button>
+            <button class="media-nav-btn next" id="viewerNext" aria-label="Next media"><i class="fas fa-chevron-right"></i></button>
+          </div>`;
+        document.body.appendChild(mv);
+      }
+      return mv;
+    }
+
+  let currentMedia = { kind:null, index:0 };
+  // Track liked/saved state & comments in-memory (could be persisted later)
+  const likedPosts = new Set();
+  const likedReels = new Set();
+  const savedPosts = new Set();
+  const savedReels = new Set();
+  const postComments = posts.map(()=>[]);
+  const reelComments = reels.map(()=>[]);
+
+    function openMediaViewer(kind, idx){
+      const mv = ensureMediaViewer();
+      const panel = mv.querySelector('.media-viewer-panel');
+      currentMedia.kind = kind; currentMedia.index = idx;
+      panel.classList.toggle('reel-mode', kind === 'reel');
+      const mediaBox = mv.querySelector('#viewerMedia');
+      const metaBox = mv.querySelector('#viewerMeta');
+      const titleEl = mv.querySelector('#viewerTitle');
+      const descEl = mv.querySelector('#viewerDesc');
+      let item; let total; let likes; let comments = 0; let extraStats='';
+      if(kind==='post') { item = posts[idx]; total = posts.length; likes=item.likes; comments=item.comments; titleEl.textContent = 'Post ' + item.id; }
+  else if(kind==='reel'){ item = reels[idx]; total = reels.length; likes=item.likes; extraStats = `<span><i class='fas fa-play'></i>${item.plays}</span>`; titleEl.textContent = 'Reel ' + item.id; }
+      if(!item){ return; }
+      mediaBox.innerHTML = `<img src="${kind==='post'?item.img:item.cover}" alt="${titleEl.textContent}">` + (kind==='reel'?'<span class="media-tag">REEL</span>':'');
+  const viewerLikeBtn = mv.querySelector('#viewerLike');
+  const viewerSaveBtn = mv.querySelector('#viewerSave');
+  const isLiked = kind==='post'? likedPosts.has(idx) : likedReels.has(idx);
+  const isSaved = kind==='post'? savedPosts.has(idx) : savedReels.has(idx);
+  viewerLikeBtn.classList.toggle('active', isLiked);
+  viewerSaveBtn.classList.toggle('active', isSaved);
+  metaBox.innerHTML = `<span class="meta-likes"><i class='fas fa-heart'></i><span class="like-val">${likes + (isLiked?1:0)}</span></span><span class="meta-comments"><i class='fas fa-comment'></i><span class="comment-val">${comments}</span></span>${extraStats}`;
+      // Render comments
+      const listEl = mv.querySelector('#viewerCommentsList');
+      const arr = kind==='post'? postComments[idx] : reelComments[idx];
+      listEl.innerHTML = arr.map(c=>`<li class="media-comment"><span class="mc-avatar">${c.user[0]||'U'}</span><div class="mc-body"><span class="mc-text">${c.text}</span><span class="mc-meta">${c.time}</span></div></li>`).join('');
+      if(!arr.length){ listEl.innerHTML = '<p class="media-empty">No comments yet.</p>'; }
+      const form = mv.querySelector('#viewerCommentForm');
+      form.dataset.kind = kind; form.dataset.idx = idx;
+      form.reset();
+      // Focus input for convenience
+      setTimeout(()=>{ mv.querySelector('#viewerCommentInput')?.focus(); }, 80);
+      descEl.textContent = kind==='post' ? 'Campus moment #' + item.id : 'Short reel clip #' + item.id;
+      mv.classList.add('open');
+      document.body.style.overflow='hidden';
+      updateNavButtons(total);
+    }
+
+    function closeMediaViewer(){
+      const mv = document.querySelector('.media-viewer');
+      if(mv){ mv.classList.remove('open'); document.body.style.overflow='auto'; }
+    }
+
+    function updateNavButtons(total){
+      const prev = document.getElementById('viewerPrev');
+      const next = document.getElementById('viewerNext');
+      prev.style.visibility = currentMedia.index>0 ? 'visible':'hidden';
+      next.style.visibility = currentMedia.index < total-1 ? 'visible':'hidden';
+    }
+
+    function stepMedia(dir){
+      if(!currentMedia.kind) return;
+      let arr = currentMedia.kind==='post'?posts:reels;
+      const nextIdx = currentMedia.index + dir;
+      if(nextIdx <0 || nextIdx>=arr.length) return;
+      openMediaViewer(currentMedia.kind, nextIdx);
+    }
+
+    function setupMediaViewerInteractions(){
+      document.addEventListener('click', (e)=>{
+        const t = e.target;
+        if(t.id==='viewerClose' || t.classList.contains('media-viewer')){ closeMediaViewer(); return; }
+        if(t.id==='viewerPrev'){ stepMedia(-1); return; }
+        if(t.id==='viewerNext'){ stepMedia(1); return; }
+        if(t.id==='viewerLike'){
+          if(!currentMedia.kind) return;
+          const {kind,index}=currentMedia;
+          const set = kind==='post'?likedPosts:likedReels;
+          const meta = document.querySelector('.media-viewer.open .meta-likes .like-val');
+          if(set.has(index)){
+            set.delete(index);
+            t.classList.remove('active');
+            if(meta) meta.textContent = (parseInt(meta.textContent)||0)-1;
+          } else {
+            set.add(index);
+            t.classList.add('active');
+            if(meta) meta.textContent = (parseInt(meta.textContent)||0)+1;
+          }
+          return;
+        }
+        if(t.id==='viewerSave'){
+          if(!currentMedia.kind) return;
+          const {kind,index}=currentMedia;
+          const set = kind==='post'?savedPosts:savedReels;
+          if(set.has(index)){
+            set.delete(index);
+            t.classList.remove('active');
+          } else {
+            set.add(index);
+            t.classList.add('active');
+          }
+          return;
+        }
+        const card = t.closest('.post-card, .reel-card');
+        if(card){ openMediaViewer(card.dataset.kind, parseInt(card.dataset.idx,10)); }
+      });
+      document.addEventListener('keydown',(e)=>{
+        const mvOpen = document.querySelector('.media-viewer.open');
+        if(!mvOpen) return;
+        if(e.key==='Escape') closeMediaViewer();
+        else if(e.key==='ArrowRight') stepMedia(1);
+        else if(e.key==='ArrowLeft') stepMedia(-1);
+      });
+      document.addEventListener('submit', (e)=>{
+        if(e.target.id==='viewerCommentForm'){
+          e.preventDefault();
+          const form = e.target;
+            const input = form.querySelector('#viewerCommentInput');
+            if(!input.value.trim()) return;
+            const kind = form.dataset.kind; const idx = parseInt(form.dataset.idx,10);
+            const bucket = kind==='post'? postComments[idx] : reelComments[idx];
+            const entry = { user: profileData.username || 'you', text: sanitize(input.value.trim()), time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) };
+            bucket.push(entry);
+            input.value='';
+            // Update list
+            const listEl = document.querySelector('#viewerCommentsList');
+            listEl.innerHTML = bucket.map(c=>`<li class="media-comment"><span class="mc-avatar">${c.user[0]||'U'}</span><div class="mc-body"><span class="mc-text">${escapeHtml(c.text)}</span><span class="mc-meta">${c.time}</span></div></li>`).join('');
+            // Update comment count meta
+            const metaCount = document.querySelector('.media-viewer.open .meta-comments .comment-val');
+            if(metaCount) metaCount.textContent = bucket.length;
+        }
+      });
+    }
+
+    function sanitize(str){ return str.replace(/[\r\n]+/g,' ').slice(0,180); }
+  function escapeHtml(str){ return str.replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c])); }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

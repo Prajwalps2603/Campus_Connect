@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Campus Connect - Colleges</title>
+  <link rel="stylesheet" href="feed.css" />
+  <link rel="stylesheet" href="skeleton.css" />
+  <style>
+    .carousel-row { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 1.2rem; padding: 1rem 0; }
+    .carousel-row::-webkit-scrollbar { height: 8px; background: #222; }
+  .carousel-row .college-card { min-width: 260px; background: #232a3a; color: #fff; border-radius: 14px; box-shadow: 0 4px 14px -4px #0006; padding: 0 0 1rem; scroll-snap-align: start; cursor: pointer; transition: transform .28s, background .28s; position:relative; display:flex; flex-direction:column; }
+  .carousel-row .college-card:hover { transform: translateY(-6px); background: #2e3b54; }
+  .college-img-wrap {width:100%; aspect-ratio:16/9; background:#1c2430; border-top-left-radius:14px; border-top-right-radius:14px; overflow:hidden; position:relative;}
+  .college-img-wrap img {width:100%; height:100%; object-fit:cover; display:block; transition:scale .6s;}
+  .carousel-row .college-card:hover .college-img-wrap img {scale:1.08;}
+  .college-card-inner {padding:.85rem 1rem 0; display:flex; flex-direction:column; gap:.45rem; flex:1;}
+  .college-name {font-size:.95rem; font-weight:600; margin:0; letter-spacing:.3px;}
+  .college-address {font-size:.68rem; line-height:1.25; color:#b9c2ce; margin:0; min-height:2.3em;}
+  .college-link {margin-top:.35rem; align-self:flex-start; font-size:.65rem; background:#36517d; color:#fff; text-decoration:none; padding:.42rem .7rem; border-radius:8px; font-weight:600; letter-spacing:.4px; display:inline-flex; gap:4px; align-items:center; box-shadow:0 2px 8px -2px #0008; transition:background .25s, box-shadow .25s;}
+  .college-link:hover {background:#43669b; box-shadow:0 4px 14px -4px #000a;}
+  .college-link i {font-size:.7rem;}
+    .carousel-title { font-size: 1.2rem; font-weight: 600; margin: 1.2rem 0 .2rem; }
+    .navbar { display: flex; align-items: center; gap: 1rem; padding: .8rem 1.2rem; background: #1a2233; }
+    .navbar input[type="search"] { flex: 1; padding: .5rem .8rem; border-radius: 8px; border: none; }
+    .navbar .filter-btn, .navbar .back-btn { background: #2e3b54; color: #fff; border: none; border-radius: 8px; padding: .5rem 1rem; cursor: pointer; }
+    .navbar .filter-btn:hover, .navbar .back-btn:hover { background: #3a4a6a; }
+    /* Make page vertically scrollable with its own scrollbar (feed.css hides body scrollbar) */
+    body.colleges-page { overflow-y:auto; min-height:100vh; }
+    body.colleges-page::-webkit-scrollbar { width:10px; }
+    body.colleges-page::-webkit-scrollbar-track { background:#121821; }
+    body.colleges-page::-webkit-scrollbar-thumb { background:#2b3644; border-radius:6px; }
+    body.colleges-page::-webkit-scrollbar-thumb:hover { background:#374454; }
+    main.colleges-main { max-width:1200px; margin:0 auto; padding:0 1rem 3rem; }
+  </style>
+</head>
+<body class="dark-theme colleges-page">
+  <nav class="navbar">
+    <button class="back-btn" onclick="window.location.href='feed.html'">Back</button>
+    <input type="search" id="collegeSearch" placeholder="Search colleges..." />
+    <button class="filter-btn" id="filterBtn">Filter</button>
+    <!-- Add more options as needed -->
+  </nav>
+  <main class="colleges-main">
+    <div class="carousel-title">Engineering Colleges (UG/PG)</div>
+    <div class="carousel-row" id="enggRow"></div>
+    <div class="carousel-title">Medical Colleges (UG/PG)</div>
+    <div class="carousel-row" id="medRow"></div>
+    <div class="carousel-title">Degree Colleges</div>
+    <div class="carousel-row" id="degRow"></div>
+    <div class="carousel-title">Law Colleges</div>
+    <div class="carousel-row" id="lawRow"></div>
+  <div class="carousel-title">Schools</div>
+  <div class="carousel-row" id="schoolRow"></div>
+  <div class="carousel-title">High Schools</div>
+  <div class="carousel-row" id="highRow"></div>
+  </main>
+  <script src="colleges.js"></script>
+</body>
+</html>

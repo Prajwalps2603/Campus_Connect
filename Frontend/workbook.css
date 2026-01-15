@@ -1,0 +1,85 @@
+:root { --primary:#6C63FF; --secondary:#FF6584; --accent:#36D1DC; --dark:#2D2B55; --muted:#8A8DA6; --glass:rgba(255,255,255,0.16); --glass-strong:rgba(255,255,255,0.24); --radius:14px; }
+html, body { height: 100%; }
+body { margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:#0f1020; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; display: flex; flex-direction: column; min-height: 100vh; }
+.page { width: 100%; height: 100vh; padding: 0; box-sizing: border-box; flex: 1; display: flex; flex-direction: column; }
+.glass { background: var(--glass); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border: 1px solid var(--glass-strong); border-radius: var(--radius); box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+.btn { display:inline-flex; align-items:center; gap:8px; border:none; border-radius:10px; padding:10px 14px; font-weight:600; cursor:pointer; transition: transform .15s ease, box-shadow .2s ease; }
+.btn:active { transform: translateY(1px); }
+.btn-primary { background: var(--primary); color:#fff; box-shadow: 0 8px 20px rgba(108,99,255,0.35); }
+.btn-secondary { background: var(--secondary); color:#fff; box-shadow: 0 8px 20px rgba(255,101,132,0.35); }
+.btn-ghost { background: transparent; color:#fff; }
+.back-btn { padding: 12px 16px; }
+
+/* Workbook Navbar */
+.workbook-navbar { display:flex; align-items:center; justify-content:space-between; padding:14px 22px; margin: 0; color:#fff; }
+.left-section { display:flex; align-items:center; gap:10px; }
+.brand { display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.4px; }
+.logo { display:grid; place-items:center; width:36px; height:36px; border-radius:10px; background: linear-gradient(135deg, var(--primary), var(--accent)); box-shadow: 0 8px 20px rgba(54,209,220,0.35); }
+.logo i { color:#fff; }
+.workbook-options { display:flex; gap:10px; }
+.workbook-btn { background: rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.2); border-radius:8px; padding:8px 16px; cursor:pointer; transition: all 0.3s ease; }
+.workbook-btn:hover { background: rgba(255,255,255,0.2); }
+.workbook-btn.active { background: var(--primary); border-color: var(--primary); }
+
+/* Tools */
+.tools { flex: 1; display: flex; flex-direction: column; padding: 0 22px 22px 22px; }
+.tool { display: none; flex: 1; flex-direction: column; }
+.tool.active { display: flex; }
+
+/* Notebook */
+.notebook-toolbar { display: flex; gap: 8px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.tool-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; }
+.tool-btn:hover { background: rgba(255,255,255,0.2); }
+.tool-btn.active { background: var(--primary); }
+.separator { width: 1px; height: 20px; background: rgba(255,255,255,0.3); margin: 0 4px; }
+.notebook-content { background: rgba(255,255,255,0.95); border-radius: 8px; padding: 20px; flex: 1; display: flex; flex-direction: column; }
+.notebook-editor { 
+    width: 100%; 
+    flex: 1; 
+    outline: none; 
+    font-family: 'Courier New', monospace; 
+    font-size: 14px; 
+    line-height: 1.5; 
+    color: #333; 
+    white-space: pre-wrap; 
+    word-wrap: break-word; 
+    resize: none;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 15px;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 40px;
+    min-height: 500px;
+    overflow-y: auto;
+}
+
+/* Word Processor */
+.word-toolbar { display: flex; gap: 15px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px; margin-bottom: 10px; flex-wrap: wrap; align-items: center; }
+.format-group { display: flex; gap: 5px; align-items: center; }
+.word-content { background: rgba(255,255,255,0.95); border-radius: 8px; padding: 20px; flex: 1; display: flex; flex-direction: column; }
+.word-editor { width: 100%; flex: 1; border: none; outline: none; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #333; resize: none; }
+.word-editor h1 { font-size: 24px; margin: 20px 0 10px 0; }
+.word-editor h2 { font-size: 20px; margin: 15px 0 8px 0; }
+.word-editor p { margin: 10px 0; }
+.word-editor ul, .word-editor ol { margin: 10px 0; padding-left: 30px; }
+.word-editor li { margin: 5px 0; }
+
+/* Advanced Word Processor Iframe */
+.advanced-word-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    touch-action: manipulation;
+    -webkit-overflow-scrolling: touch;
+}
+.footer p { margin: 0; opacity: 0.8; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .workbook-navbar { flex-direction: column; gap: 15px; }
+  .workbook-options { width: 100%; justify-content: center; }
+  .notebook-toolbar, .word-toolbar { flex-direction: column; gap: 10px; }
+  .format-group { justify-content: center; }
+}

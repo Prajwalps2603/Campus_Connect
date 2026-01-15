@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Connect</title>
+    <!-- Favicon: use the provided Campus_ Connect.png from assets -->
+    <link rel="icon" href="assets/Campus_ Connect.png" type="image/png">
+    <link rel="shortcut icon" href="assets/Campus_ Connect.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+    <!-- A0: Outer layout container -->
+    <div class="container">
+        <!-- A11: Glass effect auth panel wrapper -->
+        <div class="glass-container">
+            <!-- Global feedback messages -->
+            <div id="success-message" class="alert success is-hidden" role="alert" aria-live="polite"></div>
+            <div id="error-message" class="alert error is-hidden" role="alert" aria-live="assertive"></div>
+            <!-- A1: Login Form (default visible) -->
+            <form id="login-form" class="form active">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap" aria-hidden="true"></i>
+                    <div class="logo-text" aria-label="Campus Connect brand name">Campus Connect</div> <!-- A3: Brand Logo Text -->
+                </div>
+                <!-- Mode Switcher: Personal / College -->
+                <div class="login-mode-switch" role="tablist" aria-label="Select login type">
+                    <button type="button" class="mode-btn active" data-mode="personal" role="tab" aria-selected="true">Personal</button>
+                    <span class="mode-separator">/</span>
+                    <button type="button" class="mode-btn" data-mode="college" role="tab" aria-selected="false">College</button>
+                </div>
+                
+                <h2 class="form-title">Log In</h2> <!-- A2: Form Title -->
+                
+                <div class="input-group"> <!-- A5: Input Group -->
+                    <label for="login-username">Username, Email or Phone</label>
+                    <input type="text" id="login-username" placeholder="Enter your username, email or phone" required>
+                </div>
+                
+                <div class="input-group"> <!-- A5: Input Group -->
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password" required>
+                </div>
+                
+                <div class="remember-forgot"> <!-- A8: Remember + Forgot Row -->
+                    <div class="remember">
+                        <input type="checkbox" id="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-link">Forgot Password?</a>
+                </div>
+                
+                <button type="submit" class="submit-btn">Login</button> <!-- A6: Primary Submit Button -->
+                
+                <div class="divider"> <!-- A7: Divider -->
+                    <span>or continue with</span>
+                </div>
+                
+                <div class="social-login"> <!-- A4: Social Login Icons -->
+                    <div class="social-icon google" aria-label="Sign in with Google">
+                        <svg class="google-g" viewBox="0 0 24 24">
+                            <title>Google</title>
+                            <path fill="#4285F4" d="M23.49 12.27c0-.78-.07-1.53-.2-2.27H12v4.3h6.46c-.28 1.45-1.12 2.68-2.38 3.5v2.9h3.85c2.25-2.07 3.56-5.12 3.56-8.43z"/>
+                            <path fill="#34A853" d="M12 24c3.24 0 5.96-1.08 7.94-2.93l-3.86-2.9c-1.08.72-2.47 1.15-4.08 1.15-3.14 0-5.8-2.12-6.75-4.98H1.21v3.06C3.18 21.3 7.24 24 12 24z"/>
+                            <path fill="#FBBC05" d="M5.25 14.34a7.2 7.2 0 0 1-.38-2.34c0-.81.14-1.6.37-2.34V6.6H1.21A11.96 11.96 0 0 0 0 12c0 1.94.46 3.77 1.21 5.4l4.04-3.06z"/>
+                            <path fill="#EA4335" d="M12 4.75c1.76 0 3.34.6 4.58 1.78l3.43-3.43C17.95 1.17 15.24 0 12 0 7.24 0 3.18 2.7 1.21 6.6l4.04 3.06C6.2 6.87 8.86 4.75 12 4.75z"/>
+                        </svg>
+                    </div>
+                    <div class="social-icon facebook">
+                        <i class="fab fa-facebook-f" aria-hidden="true"></i>
+                    </div>
+                    <div class="social-icon instagram">
+                        <i class="fab fa-instagram" aria-hidden="true"></i>
+                    </div>
+                    <div class="social-icon x" aria-label="Continue with X">
+                        <svg class="x-logo" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                            <path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.8 21.75H1.49l7.73-8.835L1 2.25h6.083l4.713 6.231 6.448-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117l11.966 15.644Z"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="form-footer"> <!-- A10: Footer Switch Link -->
+                    <p>Don't have an account? <a href="#" id="switch-to-signup">Register</a></p>
+                </div>
+            </form>
+            <!-- College Login Form (initially hidden, toggled by mode switch) -->
+            <form id="college-login-form" class="form college-login-form" aria-hidden="true">
+                <button type="button" id="collegeBackBtn" class="college-back-btn" aria-label="Back to personal login">&#8592;</button>
+                <div class="logo" aria-hidden="true">
+                    <div class="logo-text">College Access</div>
+                </div>
+                <h2 class="form-title">College Login</h2>
+                <div class="input-group">
+                    <label for="college-login-email">Admin / Login Email</label>
+                    <input type="email" id="college-login-email" placeholder="institute.admin@example.edu" required>
+                </div>
+                <div class="input-group">
+                    <label for="college-login-password">Password</label>
+                    <input type="password" id="college-login-password" placeholder="Enter password" required>
+                </div>
+                <div class="remember-forgot">
+                    <div class="remember">
+                        <input type="checkbox" id="college-remember">
+                        <label for="college-remember">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-link">Forgot Password?</a>
+                </div>
+                <button type="submit" class="submit-btn">Login</button>
+                <div class="form-footer alt-footer">
+                    <p>Need an institution account? <a href="#" id="college-switch-to-signup">Create one</a></p>
+                </div>
+            </form>
+            
+            <!-- A1b: Signup Form (hidden by default) -->
+            <form id="signup-form" class="form">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap" aria-hidden="true"></i>
+                    <div class="logo-text" aria-label="Campus Connect brand name">Campus Connect</div> <!-- A3: Brand Logo Text -->
+                </div>
+                
+                <h2 class="form-title">Sign Up</h2> <!-- A2: Form Title -->
+                
+                <div class="input-group"> <!-- A5: Input Group -->
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="input-group"> <!-- A5: Input Group -->
+                    <label for="signup-email">Email Address</label>
+                    <input type="email" id="signup-email" placeholder="Enter your email" required>
+                </div>
+                <div class="input-group"> <!-- Username (required by backend & script.js) -->
+                    <label for="signup-username">Username</label>
+                    <input type="text" id="signup-username" placeholder="Choose a username" required>
+                </div>
+                
+                <div class="input-group"> <!-- A5: Input Group -->
+                    <label for="signup-phone">Phone Number</label>
+                    <input type="tel" id="signup-phone" placeholder="Enter your phone number" required>
+                </div>
+                
+                <div class="input-group"> <!-- A5: Input Group -->
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" placeholder="Create a password" required>
+                </div>
+                
+                <div class="input-group"> <!-- A5: Input Group -->
+                    <label for="signup-confirm">Confirm Password</label>
+                    <input type="password" id="signup-confirm" placeholder="Confirm your password" required>
+                </div>
+                
+                <!-- Profile visibility options -->
+                <div class="input-group" aria-label="Profile visibility options">
+                    <label>Profile Visibility</label>
+                    <div class="visibility-options">
+                        <div>
+                            <input type="checkbox" id="visibility-private">
+                            <label for="visibility-private">Private</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="visibility-public">
+                            <label for="visibility-public">Public</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="terms"> <!-- A9: Terms Agreement -->
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                </div>
+                
+                <button type="submit" class="submit-btn">Sign Up</button> <!-- A6: Primary Submit Button -->
+                
+                <div class="divider"> <!-- A7: Divider -->
+                    <span>or sign up with</span>
+                </div>
+                
+                <div class="social-login"> <!-- A4: Social Login Icons -->
+                    <div class="social-icon google" aria-label="Sign up with Google">
+                        <svg class="google-g" viewBox="0 0 24 24">
+                            <title>Google</title>
+                            <path fill="#4285F4" d="M23.49 12.27c0-.78-.07-1.53-.2-2.27H12v4.3h6.46c-.28 1.45-1.12 2.68-2.38 3.5v2.9h3.85c2.25-2.07 3.56-5.12 3.56-8.43z"/>
+                            <path fill="#34A853" d="M12 24c3.24 0 5.96-1.08 7.94-2.93l-3.86-2.9c-1.08.72-2.47 1.15-4.08 1.15-3.14 0-5.8-2.12-6.75-4.98H1.21v3.06C3.18 21.3 7.24 24 12 24z"/>
+                            <path fill="#FBBC05" d="M5.25 14.34a7.2 7.2 0 0 1-.38-2.34c0-.81.14-1.6.37-2.34V6.6H1.21A11.96 11.96 0 0 0 0 12c0 1.94.46 3.77 1.21 5.4l4.04-3.06z"/>
+                            <path fill="#EA4335" d="M12 4.75c1.76 0 3.34.6 4.58 1.78l3.43-3.43C17.95 1.17 15.24 0 12 0 7.24 0 3.18 2.7 1.21 6.6l4.04 3.06C6.2 6.87 8.86 4.75 12 4.75z"/>
+                        </svg>
+                    </div>
+                    <div class="social-icon facebook">
+                        <i class="fab fa-facebook-f" aria-hidden="true"></i>
+                    </div>
+                    <div class="social-icon instagram">
+                        <i class="fab fa-instagram" aria-hidden="true"></i>
+                    </div>
+                    <div class="social-icon x" aria-label="Sign up with X">
+                        <svg class="x-logo" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                            <path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.8 21.75H1.49l7.73-8.83351 2.25h6.083l4.713 6.231 6.448-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117l11.966 15.644Z"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="form-footer"> <!-- A10: Footer Switch Link -->
+                    <p>Already have an account? <a href="#" id="switch-to-login">Login</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+    // Personal / College mode switch and college login handling (centered container version)
+    (function(){
+        const personalForm = document.getElementById('login-form');
+        const collegeForm = document.getElementById('college-login-form');
+        const switcher = document.querySelector('.login-mode-switch');
+        if(!personalForm || !collegeForm || !switcher) return;
+        const modeBtns = switcher.querySelectorAll('.mode-btn');
+                function setMode(mode){
+                    modeBtns.forEach(b=>{ const active = b.dataset.mode===mode; b.classList.toggle('active', active); b.setAttribute('aria-selected', active?'true':'false'); });
+                    if(mode==='college'){
+                        personalForm.classList.remove('active');
+                        personalForm.setAttribute('aria-hidden','true');
+                        collegeForm.classList.add('active');
+                        collegeForm.setAttribute('aria-hidden','false');
+                        setTimeout(()=> document.getElementById('college-login-email')?.focus(), 100);
+                    } else {
+                        collegeForm.classList.remove('active');
+                        collegeForm.setAttribute('aria-hidden','true');
+                        personalForm.classList.add('active');
+                        personalForm.setAttribute('aria-hidden','false');
+                        setTimeout(()=> document.getElementById('login-username')?.focus(), 50);
+                    }
+                }
+        switcher.addEventListener('click', (e)=>{
+            const btn = e.target.closest('.mode-btn');
+            if(!btn) return;
+            const mode = btn.dataset.mode;
+            setMode(mode);
+        });
+
+        // College login submission
+        collegeForm.addEventListener('submit', async (e)=>{
+            e.preventDefault();
+            const email = document.getElementById('college-login-email').value.trim();
+            const password = document.getElementById('college-login-password').value;
+            if(!email || !password){ alert('Enter email and password'); return; }
+            const btn = collegeForm.querySelector('.submit-btn');
+            const original = btn.textContent; btn.disabled=true; btn.textContent='Signing in...';
+            try {
+                const resp = await fetch('/api/institutions/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ loginEmail: email, password }) });
+                const data = await resp.json();
+                if(!resp.ok || !data.success) throw new Error(data.message || 'Login failed');
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('institution', JSON.stringify(data.institution));
+                localStorage.setItem('user', JSON.stringify({ id:data.institution.id, username:data.institution.username, name:data.institution.name, accountType:'institution'}));
+                window.location.href='feed.html';
+            } catch(err){
+                alert(err.message || 'Failed to login');
+            } finally { btn.disabled=false; btn.textContent=original; }
+        });
+
+        document.getElementById('college-switch-to-signup')?.addEventListener('click', (e)=>{
+            e.preventDefault();
+            // open wizard from mode switch
+            if(window.__openCollegeWizard) window.__openCollegeWizard();
+        });
+
+        // Back button inside college login
+        const backBtn = document.getElementById('collegeBackBtn');
+        backBtn?.addEventListener('click', ()=> setMode('personal'));
+    })();
+    </script>
+    <!-- College Signup Form (hidden initially) -->
+    <div id="collegeSignupWizard" class="college-wizard hidden" aria-hidden="true">
+      <div class="college-wizard-backdrop" data-close="1"></div>
+      <form id="college-signup-form" class="college-wizard-panel" novalidate>
+        <div class="wizard-header">
+          <h2 class="form-title">Institute Account Setup</h2>
+          <p class="wizard-sub">Step <span id="cwStepNum">1</span> of <span id="cwTotalSteps">5</span></p>
+          <button type="button" class="wizard-close" id="cwClose" aria-label="Close">&times;</button>
+        </div>
+        <div class="wizard-progress"><div class="wizard-bar" id="cwProgress"></div></div>
+        <div class="wizard-steps">
+          <section class="cs-section wizard-step" data-step="1">
+              <h3>1. Basic Information</h3>
+              <div class="input-group"><label>Institute Name<input type="text" id="inst-name" required></label></div>
+              <div class="input-group"><label>Type of Institute<input type="text" id="inst-type" placeholder="Engineering, Medical, Law..." required></label></div>
+              <div class="input-group"><label>Established Year<input type="number" id="inst-year" min="1800" max="2099" required></label></div>
+              <div class="input-group"><label>Institute Logo (optional)<input type="file" id="inst-logo" accept="image/*"></label></div>
+              <div class="wizard-nav"><button type="button" class="next-step btn-primary" data-next>Save & Next</button></div>
+          </section>
+          <section class="cs-section wizard-step" data-step="2">
+              <h3>2. Contact Information</h3>
+              <div class="step-inner-scroll">
+                  <div class="input-group"><label>Official Address<textarea id="inst-address" rows="3" required></textarea></label></div>
+                  <div class="dual">
+                      <label>City<input type="text" id="inst-city" required></label>
+                      <label>State<input type="text" id="inst-state" required></label>
+                  </div>
+                  <div class="dual">
+                      <label>Country<input type="text" id="inst-country" required></label>
+                      <label>Pin / Zip<input type="text" id="inst-zip" required></label>
+                  </div>
+                  <div class="input-group"><label>Official Phone Number<input type="tel" id="inst-phone" required></label></div>
+                  <div class="input-group"><label>Official Email Address<input type="email" id="inst-email" required></label></div>
+                  <div class="input-group"><label>Website (optional)<input type="url" id="inst-website" placeholder="https://example.edu"></label></div>
+                  <!-- Inline Back / Next directly after last field for visibility -->
+                  <div class="wizard-nav step2-inline"><button type="button" class="prev-step" data-prev>Back</button><button type="button" class="next-step btn-primary" data-next>Save & Next</button></div>
+              </div>
+          </section>
+          <section class="cs-section wizard-step" data-step="3">
+              <h3>3. Academic Information</h3>
+              <div id="coursesWrap" class="dynamic-block">
+                  <div class="course-row">
+                      <input type="text" placeholder="Course Name" class="course-name" required>
+                      <input type="text" placeholder="Level (UG/PG/Diploma)" class="course-level" required>
+                      <input type="text" placeholder="Duration" class="course-duration" required>
+                      <button type="button" class="remove-course" aria-label="Remove course">&times;</button>
+                  </div>
+              </div>
+              <button type="button" id="addCourseBtn" class="small-btn">Add Course</button>
+              <div class="input-group"><label>Affiliations / Accreditations<textarea id="inst-affiliations" rows="2" required></textarea></label></div>
+              <div class="input-group"><label>Description<textarea id="inst-description" rows="3" required></textarea></label></div>
+              <div class="wizard-nav"><button type="button" class="prev-step" data-prev>Back</button><button type="button" class="next-step btn-primary" data-next>Save & Next</button></div>
+          </section>
+          <section class="cs-section wizard-step" data-step="4">
+              <h3>4. Administrative Information</h3>
+              <div class="admin-step-inner">
+                  <div class="input-group"><label>Head of Institute<input type="text" id="inst-head" required></label></div>
+                  <div class="input-group"><label>Contact Person Name<input type="text" id="inst-contact-name" required></label></div>
+                  <div class="dual">
+                      <label>Position<input type="text" id="inst-contact-position" required></label>
+                      <label>Contact Email<input type="email" id="inst-contact-email" required></label>
+                  </div>
+                  <div class="input-group"><label>Contact Phone<input type="tel" id="inst-contact-phone" required></label></div>
+                  <div class="wizard-nav"><button type="button" class="prev-step" data-prev>Back</button><button type="button" class="next-step btn-primary" data-next>Save & Next</button></div>
+              </div>
+          </section>
+          <section class="cs-section wizard-step" data-step="5">
+              <h3>5. Credentials, Agreement & Verification</h3>
+              <div class="credentials-scroll">
+                  <div class="credentials-inner merged-final">
+                      <div class="input-group"><label>Admin / Login Email<input type="email" id="inst-login-email" placeholder="institute.admin@example.edu" required></label></div>
+                      <div class="dual">
+                          <label>Password<input type="password" id="inst-login-password" placeholder="Create password" required></label>
+                          <label>Confirm Password<input type="password" id="inst-login-confirm" placeholder="Re-enter password" required></label>
+                      </div>
+                      <hr class="step-separator">
+                      <div class="agreement-block">
+                          <h4>Agreement</h4>
+                          <label class="checkbox-line"><input type="checkbox" id="inst-agree" required> <span>I agree to the Terms & Conditions.</span></label>
+                      </div>
+                      <hr class="step-separator">
+                      <div class="verification-block">
+                          <h4>Verification Documents</h4>
+                          <div class="input-group small-bottom"><label>Upload Documents<input type="file" id="inst-docs" multiple required></label></div>
+                          <div class="final-actions-row">
+                              <button type="button" class="prev-step back-inline" data-prev><span class="arrow" aria-hidden="true">←</span><span class="lbl">Back</span></button>
+                              <button type="submit" class="submit-btn primary-wide">Create Account</button>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </section>
+        </div>
+      </form>
+    </div>
+
+    <style>
+      /* College signup minimal styles */
+            .login-mode-switch {display:flex; align-items:center; justify-content:center; gap:.55rem; margin:0 0 1rem; font-size:.8rem; font-weight:600; letter-spacing:.4px;}
+            .login-mode-switch .mode-separator {opacity:.4; -webkit-user-select:none; user-select:none;}
+            .mode-btn {background:transparent; border:none; color:#8fa4bb; cursor:pointer; position:relative; padding:.35rem .65rem; border-radius:6px; transition:color .3s, background .35s; font:inherit; font-weight:600;}
+            .mode-btn:hover {color:#dce6f2; background:#1e2731;}
+            .mode-btn.active {color:#fff; background:#2d6ae0; box-shadow:0 4px 14px -6px rgba(45,106,224,.55);} 
+            /* Simplified centered college login form (no 3D flip) */
+            .glass-container {position:relative;}
+            .college-login-form {display:none; position:relative; opacity:0; pointer-events:none; backface-visibility:hidden; flex-direction:column; justify-content:center; gap:.75rem; padding:36px 44px 44px; box-sizing:border-box; min-height:0;}
+            .college-login-form.active {display:block; opacity:1; pointer-events:auto; animation:fadeIn .45s ease;}
+            .form.active.flip-out {animation:none;}
+            .college-login-form.flip-in {pointer-events:auto;} /* legacy class retained (no effect) */
+            .rotate-wrapper {position:relative;}
+            /* spinner removed */
+            .college-login-form .logo {display:flex; align-items:center; justify-content:center; gap:.75rem; margin:0 auto 10px; background:transparent !important; box-shadow:none !important; padding:0; border:none;}
+            .college-login-form .logo-text {font-size:1.4rem; font-weight:700; letter-spacing:.6px; background:linear-gradient(90deg,#4f46e5,#8b5cf6); -webkit-background-clip:text; background-clip:text; color:transparent;}
+                    .alt-footer {text-align:center;}
+                    /* min-height integrated earlier; duplicate removed */
+                    .college-login-form:not(.active){opacity:0;}
+                    /* pedal spinner removed */
+                    .college-login-form .form-title {text-align:center; margin:2px 0 18px; font-size:1.55rem; letter-spacing:.5px;}
+                    .college-login-form .input-group {margin:.55rem 0;}
+                    .college-login-form .remember-forgot {display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-top:4px;}
+                    .college-login-form .remember-forgot .remember {display:flex; align-items:center; gap:.45rem;}
+                    .college-login-form .submit-btn {margin-top:.6rem; width:100%; background:#4f46e5; border:none; font-weight:600; letter-spacing:.4px;}
+                    .college-login-form .submit-btn:hover {background:#5a53ed;}
+                    .college-login-form .forgot-link {font-size:.72rem; opacity:.85;}
+                    .college-login-form .forgot-link:hover {opacity:1;}
+                    .college-login-form .alt-footer {margin-top:1.1rem; font-size:.72rem;}
+                    @media (max-width:640px){
+                        .college-login-form {padding:28px 24px 36px;}
+                        .college-login-form .form-title {font-size:1.35rem;}
+                    }
+                            .college-back-btn {position:absolute; top:14px; left:14px; background:#1d2530; border:1px solid #2d3642; width:38px; height:38px; border-radius:10px; color:#d5dbe2; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:600; line-height:1; transition:background .25s, color .25s, border-color .25s, transform .25s, box-shadow .3s; z-index:10; box-shadow:0 6px 16px -6px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);} 
+                            .college-back-btn:hover {background:#273240; color:#fff; border-color:#3b4857;}
+                            .college-back-btn:active {transform:translateY(2px);}
+                            .college-back-btn:focus-visible {outline:2px solid #6366f1; outline-offset:2px;}
+      #college-signup-form {margin-top:2rem; max-width:840px; background:#10151b; border:1px solid rgba(255,255,255,0.08); border-radius:28px; box-shadow:0 18px 48px -12px rgba(0,0,0,.7); padding:2.4rem 2.1rem 2.6rem; overflow:hidden; position:relative;}
+      #college-signup-form .cs-section + .cs-section {margin-top:2rem; padding-top:1.4rem; border-top:1px dashed rgba(255,255,255,0.08);} 
+      #college-signup-form h3 {margin:0 0 .9rem; font-size:1rem; letter-spacing:.4px;}
+      #college-signup-form .dual {display:flex; gap:1rem; flex-wrap:wrap;}
+      #college-signup-form .dual > label {flex:1 1 220px; display:flex; flex-direction:column; gap:.35rem; font-size:.68rem; font-weight:600; letter-spacing:.35px; color:#cdd5df;}
+      #college-signup-form label input, #college-signup-form textarea {background:#182029; border:1px solid #27323d; padding:.65rem .75rem; border-radius:10px; color:#e6edf3; font:inherit; font-size:.72rem; resize:vertical;}
+      #college-signup-form textarea {min-height:84px;}
+      #college-signup-form .input-group {display:flex; flex-direction:column; gap:.45rem; margin:.65rem 0;}
+      #college-signup-form .input-group > label {display:flex; flex-direction:column; gap:.4rem; font-size:.7rem; font-weight:600; letter-spacing:.35px; color:#cfd6e0;}
+      #college-signup-form .checkbox-line {display:flex; align-items:center; gap:.55rem; font-size:.7rem; font-weight:600; color:#d0dae5;}
+      #college-signup-form .form-actions-line {display:flex; gap:1rem; justify-content:flex-end; margin-top:2rem;}
+      #college-signup-form .secondary-btn {background:#1d252d; border:1px solid #2a343f; color:#c8d2dd; padding:.7rem 1.1rem; border-radius:12px; font-size:.7rem; font-weight:600; cursor:pointer;}
+      #college-signup-form .secondary-btn:hover {background:#252f39;}
+      #college-signup-form .submit-btn {background:#2d6ae0; border:none; color:#fff; padding:.75rem 1.4rem; border-radius:12px; font-size:.72rem; font-weight:600; cursor:pointer; box-shadow:0 6px 18px -8px rgba(45,106,224,0.6);}
+      #college-signup-form .submit-btn:hover {background:#3876ee;}
+      #college-signup-form .dynamic-block {display:flex; flex-direction:column; gap:.7rem;}
+      #college-signup-form .course-row {display:flex; flex-wrap:wrap; gap:.55rem; background:#151c24; border:1px solid #25313d; padding:.65rem .7rem; border-radius:12px; position:relative;}
+      #college-signup-form .course-row input {flex:1 1 160px;}
+      #college-signup-form .remove-course {background:#2b3440; color:#d2dae4; border:none; width:30px; height:30px; border-radius:8px; cursor:pointer; font-size:1rem; line-height:1; display:flex; align-items:center; justify-content:center;}
+      #college-signup-form .remove-course:hover {background:#384453;}
+      #addCourseBtn {margin-top:.6rem; background:#203040; color:#d9e6f2; border:1px solid #2d3e51; font-size:.65rem; padding:.55rem .9rem; border-radius:10px; cursor:pointer;}
+      #addCourseBtn:hover {background:#2a3d50;}
+      /* Wizard Styles */
+      .college-wizard {position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index:1200;}
+      .college-wizard.hidden {display:none;}
+      .college-wizard-backdrop {position:absolute; inset:0; background:rgba(0,0,0,.6); backdrop-filter:blur(2px);}
+    .college-wizard-panel {position:relative; background:#111; width: min(780px,95%); max-height:90vh; overflow:hidden; border:1px solid #2a2a2a; border-radius:18px; padding:24px 28px 32px; display:flex; flex-direction:column; box-shadow:0 10px 40px -10px rgba(0,0,0,.8);} 
+      .wizard-header {text-align:center; margin-bottom:12px;}
+      .wizard-header h2 {margin:0 0 4px; font-size:1.7rem;}
+      .wizard-sub {font-size:.8rem; letter-spacing:.5px; opacity:.7; margin:0;}
+      .wizard-close {position:absolute; top:10px; right:12px; background:transparent; border:none; color:#bbb; font-size:28px; cursor:pointer; line-height:1;} 
+      .wizard-close:hover {color:#fff;}
+      .wizard-progress {height:5px; background:#1e1e1e; border-radius:3px; overflow:hidden; margin:0 0 18px;}
+      .wizard-bar {height:100%; width:0; background:linear-gradient(90deg,#4f46e5,#6366f1,#8b5cf6);} 
+    .wizard-steps {flex:1 1 auto; position:relative; overflow:hidden; min-height:0;}
+    .wizard-step {position:absolute; inset:0; overflow-y:auto; padding-right:4px; opacity:0; transform:translateX(40px); transition:opacity .35s ease, transform .35s ease; pointer-events:none; overscroll-behavior:contain;}
+    .wizard-step.active {opacity:1; transform:translateX(0); position:relative; pointer-events:auto;}
+      .wizard-step.exit-left {opacity:0; transform:translateX(-40px);} 
+      .wizard-step::-webkit-scrollbar {width:6px;} 
+      .wizard-step::-webkit-scrollbar-track {background:transparent;} 
+      .wizard-step::-webkit-scrollbar-thumb {background:#2e2e2e; border-radius:10px;} 
+      .wizard-nav {display:flex; justify-content:flex-end; gap:12px; margin-top:18px;}
+      .wizard-nav.final {justify-content:space-between;}
+      .wizard-nav button {padding:10px 18px; border-radius:8px; border:1px solid #303030; background:#1b1b1b; color:#d5d5d5; cursor:pointer; font-size:.9rem; letter-spacing:.3px;}
+      .wizard-nav button:hover {background:#242424;}
+      .wizard-nav .btn-primary {background:#4f46e5; border-color:#4f46e5; color:#fff; font-weight:600;}
+      .wizard-nav .btn-primary:hover {filter:brightness(1.15);} 
+      .prev-step {background:#222;}
+      .prev-step:hover {background:#2c2c2c;}
+      /* Additional scroll container for Step 2 */
+      .step-inner-scroll {max-height:55vh; overflow-y:auto; padding-right:6px;}
+      .step-inner-scroll::-webkit-scrollbar {width:6px;}
+      .step-inner-scroll::-webkit-scrollbar-track {background:transparent;}
+      .step-inner-scroll::-webkit-scrollbar-thumb {background:#2f2f2f; border-radius:10px;}
+      @media (max-height:700px){
+        .step-inner-scroll {max-height:50vh;}
+      }
+      @media (max-width:600px){
+        .college-wizard-panel {padding:20px 20px 28px; border-radius:16px;}
+        .wizard-header h2 {font-size:1.35rem;}
+        .wizard-step {padding-right:2px;}
+      }
+    </style>
+        <style>
+            /* Step 2 refined layout: scroll area with inline nav after fields */
+            .wizard-step[data-step="2"] {display:flex; flex-direction:column;}
+            .wizard-step[data-step="2"] .step-inner-scroll {flex:1 1 auto; overflow-y:auto; padding-right:6px;}
+            .wizard-step[data-step="2"] .wizard-nav.step2-inline {position:relative; background:transparent; box-shadow:none; padding-top:12px; margin-top:8px;}
+            .wizard-step[data-step="2"] .step-inner-scroll::-webkit-scrollbar {width:6px;}
+            .wizard-step[data-step="2"] .step-inner-scroll::-webkit-scrollbar-thumb {background:#323232; border-radius:10px;}
+                    /* Center layout for Step 4 */
+                    .wizard-step[data-step="4"] {align-items:center;}
+                    .wizard-step[data-step="4"] .admin-step-inner {width:100%; max-width:560px; margin:0 auto; display:flex; flex-direction:column;}
+                    .wizard-step[data-step="4"] .admin-step-inner .dual {gap:1rem;}
+                    .wizard-step[data-step="4"] .admin-step-inner .dual > label {flex:1 1 260px;}
+                    @media (max-width:640px){
+                        .wizard-step[data-step="4"] .admin-step-inner .dual {flex-direction:column;}
+                    }
+                            /* Center layout for Step 5 */
+                            .wizard-step[data-step="5"] {align-items:center; display:flex; flex-direction:column;}
+                            .wizard-step[data-step="5"] .credentials-scroll {flex:1 1 auto; width:100%; display:flex; justify-content:center; overflow-y:auto; padding-right:6px; min-height:0; position:relative;}
+                            .wizard-step[data-step="5"] .credentials-scroll:after {content:""; position:absolute; left:0; right:0; bottom:0; height:36px; pointer-events:none; background:linear-gradient(to bottom,rgba(17,17,17,0), #111 75%);} 
+                            .wizard-step[data-step="5"] .credentials-inner {width:100%; max-width:560px; display:flex; flex-direction:column; max-height:calc(90vh - 260px); overflow-y:auto; padding-right:8px;}
+                                    /* Explicit scroll area for Step 5 content */
+                                    .wizard-step[data-step="5"] .credentials-inner::-webkit-scrollbar {width:6px;}
+                                    .wizard-step[data-step="5"] .credentials-inner::-webkit-scrollbar-thumb {background:#2b2b2b; border-radius:10px;}
+                            .wizard-step[data-step="5"] .credentials-inner .dual {gap:1rem;}
+                            .wizard-step[data-step="5"] .credentials-inner .dual > label {flex:1 1 260px; display:flex; flex-direction:column; gap:.4rem;}
+                            @media (max-width:640px){
+                                .wizard-step[data-step="5"] .credentials-inner .dual {flex-direction:column;}
+                            }
+                                    .wizard-step[data-step="5"] .credentials-scroll::-webkit-scrollbar {width:6px;}
+                                    .wizard-step[data-step="5"] .credentials-scroll::-webkit-scrollbar-thumb {background:#2f2f2f; border-radius:10px;}
+                                    .wizard-step[data-step="5"] .inside-step5 {margin-top:20px;}
+                                    .wizard-step[data-step="5"] .final-actions-row {display:flex; gap:.9rem; margin-top:1rem; align-items:flex-start;}
+                                    .wizard-step[data-step="5"] .final-actions-row .primary-wide {flex:1 1 auto;}
+                                    .wizard-step[data-step="5"] .final-actions-row .back-inline {display:inline-flex; align-items:center; gap:.55rem; background:#1f2430; border:1px solid #364252; padding:10px 16px 10px 14px; border-radius:12px; color:#d5dbe2; cursor:pointer; font-size:.85rem; font-weight:600; letter-spacing:.3px; position:relative; transition:background .25s, border-color .25s, box-shadow .3s, color .25s;}
+                                    .wizard-step[data-step="5"] .final-actions-row .back-inline .arrow {width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#4f46e5,#6366f1); color:#fff; border-radius:50%; font-size:11px; line-height:1; box-shadow:0 0 0 3px #1f2430;}
+                                    .wizard-step[data-step="5"] .final-actions-row .back-inline:hover {background:#273040; border-color:#455367; color:#eef3f8;}
+                                    .wizard-step[data-step="5"] .final-actions-row .back-inline:hover .arrow {box-shadow:0 0 0 3px #273040;}
+                                    .wizard-step[data-step="5"] .final-actions-row .back-inline:active {transform:translateY(2px);} 
+                                    .wizard-step[data-step="5"] .final-actions-row .back-inline:focus-visible {outline:2px solid #6366f1; outline-offset:2px;}
+                                    /* Merged final step styling */
+                                    .merged-final {gap:1rem;}
+                                    .merged-final h4 {margin:.6rem 0 .4rem; font-size:.85rem; letter-spacing:.4px; font-weight:600;}
+                                    .step-separator {border:none; height:1px; background:#222; margin:1.1rem 0 .9rem;}
+                                    .verification-block .input-group {margin:.4rem 0 .2rem;}
+            @media (max-height:720px){
+                .wizard-step[data-step="2"] .step-inner-scroll {max-height:unset;}
+            }
+        </style>
+    <!-- Account Type Selection Modal -->
+    <div id="acctTypeModal" class="acct-modal" aria-hidden="true" role="dialog" aria-labelledby="acctTypeTitle" aria-modal="true">
+        <div class="acct-modal-backdrop" data-close="1"></div>
+        <div class="acct-modal-panel" role="document">
+            <button class="acct-modal-close" data-close="1" aria-label="Close selection">&times;</button>
+            <h3 id="acctTypeTitle">Create Account As</h3>
+            <p class="acct-modal-desc">Choose the type of account you want to create.</p>
+            <div class="acct-type-choice-wrap">
+                <button class="acct-type-choice" data-type="self">
+                    <i class="fas fa-user"></i>
+                    <span>My Self</span>
+                </button>
+                <button class="acct-type-choice" data-type="college">
+                    <i class="fas fa-school"></i>
+                    <span>College / Institute</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+      .acct-modal {position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:3000;}
+      .acct-modal[aria-hidden="false"] {display:flex;}
+      .acct-modal-backdrop {position:absolute; inset:0; background:rgba(0,0,0,.55); backdrop-filter:blur(4px);} 
+      .acct-modal-panel {position:relative; width: min(420px, 92%); background:#12161d; border:1px solid rgba(255,255,255,0.08); border-radius:22px; padding:2rem 1.75rem 2.1rem; box-shadow:0 14px 48px -10px rgba(0,0,0,.65), 0 0 0 1px rgba(255,255,255,0.05); display:flex; flex-direction:column; gap:1.25rem;}
+      .acct-modal-panel h3 {margin:0; font-size:1.25rem; letter-spacing:.5px;}
+      .acct-modal-desc {margin:0; font-size:.75rem; color:#98a4b3; line-height:1.4;}
+      .acct-type-choice-wrap {display:flex; flex-direction:column; gap:.9rem;}
+      .acct-type-choice {background:#1c232c; border:1px solid #27313c; color:#e6ecf3; padding:1rem 1.1rem; border-radius:16px; font:inherit; font-weight:600; display:flex; align-items:center; gap:.9rem; cursor:pointer; text-align:left; position:relative; transition:background .3s, border-color .3s, transform .35s cubic-bezier(.25,.9,.35,1);} 
+      .acct-type-choice i {font-size:1.2rem; color:#6cb5ff; width:26px; text-align:center;} 
+      .acct-type-choice:hover {background:#222d37; border-color:#34414f;} 
+      .acct-type-choice:active {transform:translateY(2px);} 
+      .acct-modal-close {position:absolute; top:10px; right:10px; background:transparent; border:none; color:#9aa4b3; font-size:1.5rem; cursor:pointer; line-height:1; padding:.25rem .6rem; border-radius:10px; transition:background .25s,color .25s;} 
+      .acct-modal-close:hover {background:#1e252d; color:#fff;} 
+      @media (max-width:520px){ .acct-modal-panel {padding:1.6rem 1.25rem 1.8rem; border-radius:20px;} .acct-type-choice {padding:.85rem .95rem; border-radius:14px;} }
+      body.modal-open {overflow:hidden;} 
+    </style>
+    <script>
+// Wizard logic appended after existing script runs (non-destructive)
+(function(){
+  const wizard = document.getElementById('collegeSignupWizard');
+  if(!wizard) return; // safety
+  const steps = Array.from(wizard.querySelectorAll('.wizard-step'));
+    const totalSteps = 5; // merged steps 5,6,7 into single final step
+  const stepNumEl = document.getElementById('cwStepNum');
+  const totalEl = document.getElementById('cwTotalSteps');
+  const progressBar = document.getElementById('cwProgress');
+  const closeBtn = document.getElementById('cwClose');
+  totalEl.textContent = totalSteps;
+  let current = 0;
+
+  function focusFirstField(stepEl){
+    const field = stepEl.querySelector('input:not([type=hidden]), textarea, select');
+    if(field){
+      requestAnimationFrame(()=> field.focus());
+    }
+  }
+
+  function showStep(index, direction){
+    if(index < 0 || index >= totalSteps) return;
+    const outgoing = steps[current];
+    const incoming = steps[index];
+    if(outgoing && outgoing !== incoming){
+      outgoing.classList.remove('active');
+      if(direction === 'forward') outgoing.classList.add('exit-left');
+      setTimeout(()=> outgoing.classList.remove('exit-left'), 250);
+    }
+    incoming.classList.add('active');
+    current = index;
+    stepNumEl.textContent = (current+1);
+    const pct = ((current) / (totalSteps-1))*100; 
+    progressBar.style.width = pct + '%';
+    focusFirstField(incoming);
+  }
+  showStep(0);
+
+  function validateCurrent(){
+    const active = steps[current];
+    if(!active) return true;
+    const requiredFields = active.querySelectorAll('input[required], textarea[required]');
+    for(const f of requiredFields){
+      if(f.type === 'checkbox' && !f.checked){ f.focus(); return false; }
+      if(!f.value){ f.focus(); return false; }
+      if(f.id === 'inst-login-confirm'){
+        const pw = document.getElementById('inst-login-password');
+        if(pw && pw.value !== f.value){ f.value=''; f.placeholder='Passwords must match'; f.focus(); return false; }
+      }
+    }
+    return true;
+  }
+
+    wizard.addEventListener('click', (e)=>{
+        const nextEl = e.target.closest('[data-next]');
+        const prevEl = e.target.closest('[data-prev]');
+        const closeEl = e.target.closest('[data-close]');
+        if(nextEl){
+            if(!validateCurrent()) return; 
+            showStep(current+1,'forward');
+        } else if(prevEl){
+            showStep(current-1,'back');
+        } else if(closeEl){
+            hideWizard();
+        }
+    });
+
+  function hideWizard(){
+    wizard.classList.add('hidden');
+    wizard.setAttribute('aria-hidden','true');
+    document.body.style.overflow='';
+  }
+  function openWizard(){
+    wizard.classList.remove('hidden');
+    wizard.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+    showStep(0);
+  }
+  closeBtn && closeBtn.addEventListener('click', hideWizard);
+
+  // Expose so existing account type selection can call it
+  window.__openCollegeWizard = openWizard;
+})();
+</script>
+</body>
+</html>

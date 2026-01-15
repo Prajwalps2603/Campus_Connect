@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>College Page</title>
+  <link rel="stylesheet" href="feed.css" />
+  <style>
+    body { background: #232a3a; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; }
+    .college-header { padding: 2rem 1rem 1rem; text-align: center; }
+    .college-header h1 { font-size: 2.2rem; margin-bottom: .5rem; }
+    .college-header .college-type { font-size: 1.1rem; color: #7aff96; margin-bottom: 1.2rem; }
+    .college-content { max-width: 900px; margin: 0 auto; background: #222a38; border-radius: 16px; padding: 2rem; box-shadow: 0 2px 12px #0003; }
+    .college-info { margin-bottom: 2rem; }
+    .college-info strong { color: #7aff96; }
+    .college-back { margin-top: 2rem; display: inline-block; background: #2e3b54; color: #fff; border-radius: 8px; padding: .7rem 1.4rem; text-decoration: none; transition: background .2s; }
+    .college-back:hover { background: #3a4a6a; }
+  </style>
+</head>
+<body>
+  <div class="college-header">
+    <h1 id="collegeName">College Name</h1>
+    <div class="college-type" id="collegeType">Type</div>
+  </div>
+  <div class="college-content">
+    <div class="college-info" id="collegeInfo">
+      <strong>About:</strong> <span id="collegeAbout">This is a sample college page. More info coming soon.</span>
+    </div>
+    <a href="colleges.html" class="college-back">&larr; Back to Colleges</a>
+  </div>
+  <script>
+    // Parse college name from URL
+    const match = location.pathname.match(/college-([\w-]+)\.html/);
+    const name = match ? decodeURIComponent(match[1].replace(/-/g,' ')) : 'College Name';
+    document.getElementById('collegeName').textContent = name.replace(/\b\w/g, l => l.toUpperCase());
+    // Demo: set type based on name
+    let type = 'College';
+    if(/iit|nit|rv|bms|pes|mit|vit|jssate|msrit|bit/i.test(name)) type = 'Engineering College';
+    else if(/aiims|medical|kmc|jss|bmcri|kasturba|sims|jjm|sdm/i.test(name)) type = 'Medical College';
+    else if(/christ|mount|st joseph|nmkrv|jain|mes|national|bishop|seshadripuram|vivekananda/i.test(name)) type = 'Degree College';
+    else if(/nlsiu|kle|bms law|ramaiah law|sdm law|jss law|bishop cotton law|cmr law|al-ameen law|bangalore institute/i.test(name)) type = 'Law College';
+    else if(/school|high/i.test(name)) type = 'School / High School';
+    document.getElementById('collegeType').textContent = type;
+    document.getElementById('collegeAbout').textContent = `Welcome to ${name.replace(/\b\w/g, l => l.toUpperCase())}. More details and features coming soon.`;
+  </script>
+</body>
+</html>

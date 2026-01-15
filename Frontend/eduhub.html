@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduHub — Academic Resources</title>
+  <link rel="stylesheet" href="eduhub.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</head>
+<body>
+  <div class="page">
+    <!-- NAVBAR -->
+    <div class="navbar glass">
+      <div class="left-section">
+        <button id="backBtn" class="btn btn-ghost glass back-btn" title="Back" aria-label="Go back" type="button"><i class="fas fa-arrow-left"></i></button>
+        <div class="brand">
+          <div class="logo"><i class="fas fa-graduation-cap"></i></div>
+          <span>Campus Connect</span>
+        </div>
+      </div>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#" class="nav-link active" data-section="home">Home</a>
+        <a href="#" class="nav-link" data-section="notes">Notes</a>
+        <a href="#" class="nav-link" data-section="projects">Projects</a>
+        <a href="#" class="nav-link" data-section="resources">Resources</a>
+        <a href="#" class="nav-link" data-section="community">Community</a>
+        <a href="#" class="nav-link" data-section="workbook" onclick="openWorkbook()">Workbook</a>
+      </nav>
+      <div class="profile"><span class="avatar"></span><span>Student</span></div>
+    </div>
+
+    <!-- SEARCH BAR -->
+    <div class="search glass">
+      <div class="search-input"><i class="fas fa-search"></i><input id="searchInput" type="text" placeholder="Search by subject name, course code, or subject code" /></div>
+      <button class="chip btn-ghost" id="filterBtn"><i class="fas fa-filter"></i> Filter</button>
+      <button class="chip btn-ghost" id="sortBtn"><i class="fas fa-sort"></i> Sort</button>
+      <button class="chip btn-primary" id="uploadBtn"><i class="fas fa-upload"></i> Upload</button>
+      <div class="scheme">
+        <div class="chip"><i class="fas fa-calendar"></i><input id="schemeInput" type="text" placeholder="Scheme (e.g., 2021)" /></div>
+        <button class="btn btn-secondary apply" id="applyScheme">Apply</button>
+        <div class="scheme-display" id="schemeDisplay">Current scheme: All</div>
+      </div>
+    </div>
+
+    <!-- UPLOAD MODAL -->
+    <div id="uploadModal" class="modal">
+      <div class="modal-content glass">
+        <span class="close">&times;</span>
+        <h3>Upload Note or Project</h3>
+        <form id="uploadForm">
+          <select id="uploadType" required>
+            <option value="note">Note</option>
+            <option value="project">Project</option>
+          </select>
+          <input type="text" id="title" placeholder="Title" required>
+          <input type="text" id="subject" placeholder="Subject (for notes)">
+          <input type="text" id="courseCode" placeholder="Course Code (for notes)">
+          <textarea id="content" placeholder="Content (for notes)"></textarea>
+          <input type="text" id="technology" placeholder="Technology (for projects)">
+          <input type="number" id="completion" placeholder="Completion % (for projects)" min="0" max="100">
+          <input type="file" id="file">
+          <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- SECTIONS -->
+    <div class="sections">
+      <!-- HOME -->
+      <section id="home" class="section active">
+        <div class="stats">
+          <div class="stat-card glass"><h3>Notes Available</h3><div class="value" id="statNotes">128</div></div>
+          <div class="stat-card glass"><h3>Projects</h3><div class="value" id="statProjects">42</div></div>
+          <div class="stat-card glass"><h3>Active Users</h3><div class="value" id="statUsers">1,234</div></div>
+          <div class="stat-card glass"><h3>Total Downloads</h3><div class="value" id="statDownloads">8,910</div></div>
+        </div>
+
+        <div class="carousel">
+          <div class="carousel-header"><h3 class="section-title">Recently Uploaded Notes</h3></div>
+          <div class="view-all-container"><button class="btn btn-secondary view-all" data-section="notes">View All →</button></div>
+          <div class="carousel-track" id="notesCarousel"></div>
+        </div>
+
+        <div class="carousel">
+          <div class="carousel-header"><h3 class="section-title">Recently Uploaded Projects</h3></div>
+          <div class="view-all-container"><button class="btn btn-secondary view-all" data-section="projects">View All →</button></div>
+          <div class="carousel-track" id="projectsCarousel"></div>
+        </div>
+      </section>
+
+      <!-- NOTES -->
+      <section id="notes" class="section">
+        <h3 class="section-title">Engineering Notes</h3>
+        <div class="carousel">
+          <div class="carousel-track" id="engNotes"></div>
+        </div>
+
+        <h3 class="section-title">Medical Notes</h3>
+        <div class="carousel">
+          <div class="carousel-track" id="medNotes"></div>
+        </div>
+      </section>
+
+      <!-- PROJECTS -->
+      <section id="projects" class="section">
+        <h3 class="section-title">AI & Machine Learning Projects</h3>
+        <div class="carousel">
+          <div class="carousel-track" id="mlProjects"></div>
+        </div>
+
+        <h3 class="section-title">Java Projects</h3>
+        <div class="carousel">
+          <div class="carousel-track" id="javaProjects"></div>
+        </div>
+      </section>
+
+      <!-- RESOURCES -->
+      <section id="resources" class="section">
+        <h3 class="section-title">Academic Resources</h3>
+        <div class="carousel">
+          <div class="carousel-track" id="resourcesCarousel">
+            <div class="carousel-card glass"><h4><i class="fas fa-book"></i> Online Libraries</h4><p>Access to JSTOR, IEEE Xplore, and more.</p><button class="btn btn-primary"><i class="fas fa-external-link-alt"></i> Visit</button></div>
+            <div class="carousel-card glass"><h4><i class="fas fa-video"></i> Video Lectures</h4><p>MIT OpenCourseWare and Khan Academy.</p><button class="btn btn-primary"><i class="fas fa-external-link-alt"></i> Watch</button></div>
+            <div class="carousel-card glass"><h4><i class="fas fa-tools"></i> Coding Platforms</h4><p>LeetCode, HackerRank, CodeChef.</p><button class="btn btn-primary"><i class="fas fa-external-link-alt"></i> Practice</button></div>
+            <div class="carousel-card glass"><h4><i class="fas fa-graduation-cap"></i> Research Papers</h4><p>Google Scholar and arXiv access.</p><button class="btn btn-primary"><i class="fas fa-external-link-alt"></i> Search</button></div>
+            <div class="carousel-card glass"><h4><i class="fas fa-calculator"></i> Math Tools</h4><p>Wolfram Alpha and Symbolab.</p><button class="btn btn-primary"><i class="fas fa-external-link-alt"></i> Calculate</button></div>
+            <div class="carousel-card glass"><h4><i class="fas fa-language"></i> Language Learning</h4><p>Duolingo and Memrise for coding languages.</p><button class="btn btn-primary"><i class="fas fa-external-link-alt"></i> Learn</button></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- COMMUNITY -->
+      <section id="community" class="section">
+        <h3 class="section-title">Community Discussions</h3>
+        <div class="carousel">
+          <div class="carousel-track" id="communityCarousel">
+            <div class="carousel-card glass"><h4><i class="fas fa-users"></i> Study Groups</h4><p>Join or create study groups for your courses.</p><button class="btn btn-primary"><i class="fas fa-plus"></i> Join</button></div>
+            <div class="carousel-card glass"><h4><i class="fas fa-question-circle"></i> Q&A Forum</h4><p>Ask questions and help others with answers.</p><button class="btn btn-primary"><i class="fas fa-comments"></i> Discuss</button></div>
+            <div class="carousel-card glass"><h4><i class="fas fa-trophy"></i> Leaderboards</h4><p>Top contributors and active members.</p><button class="btn btn-primary"><i class="fas fa-list"></i> View</button></div>
+            <div class="carousel-card glass"><h4><i class="fas fa-calendar-alt"></i> Events</h4><p>Upcoming study sessions and workshops.</p><button class="btn btn-primary"><i class="fas fa-calendar"></i> Check</button></div>
+            <div class="carousel-card glass"><h4><i class="fas fa-handshake"></i> Mentorship</h4><p>Connect with mentors and mentees.</p><button class="btn btn-primary"><i class="fas fa-user-friends"></i> Connect</button></div>
+            <div class="carousel-card glass"><h4><i class="fas fa-share-alt"></i> Share Knowledge</h4><p>Post your insights and resources.</p><button class="btn btn-primary"><i class="fas fa-share"></i> Share</button></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2025 Campus Connect. All rights reserved.</p>
+  </footer>
+
+  <script src="eduhub.js"></script>
+</body>
+</html>

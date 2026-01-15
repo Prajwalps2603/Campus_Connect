@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campus Connect - Trending</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="feed.css" />
+  <link rel="stylesheet" href="skeleton.css" />
+  <style>
+    .trending-page .trend-col {display:flex; flex-direction:column; gap:1.3rem;}
+    .trend-header {background:#0f1215; border:1px solid #1f252b; padding:1.15rem 1.35rem; border-radius:18px; display:flex; flex-direction:column; gap:.7rem;}
+    .trend-header h1 {margin:0; font-size:1.55rem;}
+    .trend-section {background:#0f1215; border:1px solid #1f252b; padding:1rem 1.15rem 1.2rem; border-radius:18px; display:flex; flex-direction:column; gap:.9rem;}
+    .media-grid {display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:.9rem;}
+    .media-card {background:#101417; border:1px solid #1f242c; border-radius:14px; padding:.6rem .7rem .75rem; display:flex; flex-direction:column; gap:.5rem; position:relative;}
+    .media-thumb {width:100%; aspect-ratio:16/9; background:#1d2430; border-radius:10px; object-fit:cover;}
+    .media-card h3 {margin:0; font-size:.85rem; line-height:1.2;}
+    .tag-pills {display:flex; gap:.4rem; flex-wrap:wrap;}
+    .tag {background:#1d2430; border:1px solid #27303c; color:#9fb5d1; font-size:.55rem; padding:.25rem .5rem; border-radius:14px; letter-spacing:.5px; text-transform:uppercase;}
+    .rank {position:absolute; top:.5rem; left:.5rem; background:#2563eb; font-size:.6rem; color:#fff; padding:.25rem .45rem; border-radius:6px; font-weight:600;}
+    @media(max-width:900px){ .trending-page .layout {flex-direction:column;} .sidebar.right-sidebar {display:none;} }
+  </style>
+</head>
+<body class="dark-theme trending-page loading">
+  <div class="skeleton-overlay generic container">
+    <div class="skel-stack">
+      <div class="skel-bar w-50 tall"></div>
+      <div class="skel-row"><div class="skel-pill"></div><div class="skel-pill"></div><div class="skel-pill"></div></div>
+      <div class="skel-card-grid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr));">
+        <div class="skel-card"></div><div class="skel-card"></div><div class="skel-card"></div><div class="skel-card"></div>
+      </div>
+    </div>
+  </div>
+  <div class="real-content">
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <div class="logo" role="button" onclick="window.location.href='feed.html'"><i class="fas fa-graduation-cap"></i><span>Campus Connect</span></div>
+        <div class="header-actions"><button class="chat-btn" title="Feed" onclick="window.location.href='feed.html'"><i class="fas fa-house"></i></button></div>
+      </div>
+    </div>
+  </header>
+  <main class="main">
+    <div class="container">
+      <div class="section-layout">
+        <aside class="sidebar primary-nav compact right-column" aria-label="Trending navigation">
+          <ul class="nav-stack innovative">
+            <li><button class="nav-item" onclick="window.location.href='feed.html'"><i class="fas fa-home"></i><span>Feed</span></button></li>
+            <li><button class="nav-item" onclick="window.location.href='events.html'"><i class="fas fa-calendar"></i><span>Events</span></button></li>
+            <li><button class="nav-item" onclick="window.location.href='sports.html'"><i class="fas fa-futbol"></i><span>Sports</span></button></li>
+            <li><button class="nav-item" onclick="window.location.href='challenges.html'"><i class="fas fa-medal"></i><span>Challenges</span></button></li>
+            <li><button class="nav-item active"><i class="fas fa-fire"></i><span>Trending</span></button></li>
+          </ul>
+        </aside>
+        <div class="center-column trend-col">
+          <div class="trend-header section-header">
+            <h1>Trending Now</h1>
+            <p class="lead-note">Reels, songs, movies & campus entertainment—what everyone is watching, sharing and looping today.</p>
+            <div class="badge-group" id="trendCategories">
+              <button class="badge" data-cat="all" aria-pressed="true">All</button>
+              <button class="badge" data-cat="reels">Reels</button>
+              <button class="badge" data-cat="songs">Songs</button>
+              <button class="badge" data-cat="movies">Movies</button>
+            </div>
+            <div class="section-filters mt-2tenths">
+              <select id="trendTag" aria-label="Filter by tag">
+                <option value="all">All Tags</option>
+                <option value="Dance">Dance</option>
+                <option value="Coding">Coding</option>
+                <option value="Food">Food</option>
+                <option value="Aerial">Aerial</option>
+                <option value="Tips">Tips</option>
+                <option value="Chill">Chill</option>
+                <option value="Focus">Focus</option>
+                <option value="Hype">Hype</option>
+                <option value="Series">Series</option>
+                <option value="Docu">Docu</option>
+                <option value="Esports">Esports</option>
+                <option value="Culture">Culture</option>
+              </select>
+              <input type="search" id="trendSearch" placeholder="Search trending..." aria-label="Search trending content" />
+            </div>
+          </div>
+          <section class="trend-section">
+            <h2 class="subhead">Top Reels</h2>
+            <div class="media-grid" id="reelsGrid"></div>
+          </section>
+          <section class="trend-section">
+            <h2 class="subhead">Songs on Repeat</h2>
+            <div class="media-grid" id="songsGrid"></div>
+          </section>
+          <section class="trend-section">
+            <h2 class="subhead">Movies & Shows</h2>
+            <div class="media-grid" id="moviesGrid"></div>
+          </section>
+        </div>
+        <aside class="sidebar right-sidebar dark-panels mini-hide right-column" aria-label="Trending side info">
+          <div class="mega-panel">
+            <section class="mega-section"><h3 class="panel-title">Buzz Tags</h3><ul class="highlight-list" id="tagList"></ul></section>
+            <section class="mega-section"><h3 class="panel-title">Campus Creators</h3><ul class="today-list" id="creatorsList"></ul></section>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+  </div>
+  <script src="skeleton.js"></script>
+  <script src="trending.js"></script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram-Style Chat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="message.css">
+</head>
+<body>
+    <div class="chat-container">
+        <!-- Left Sidebar - Conversations -->
+    <div class="conversations-sidebar sidebar-panel">
+            <div class="sidebar-header">
+                <button class="icon-btn back-btn" id="chatBackBtn" title="Back" aria-label="Back">
+                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                </button>
+                <div class="user-info">
+                    <div class="user-avatar" id="currentUserAvatar">PS</div>
+                    <div class="user-details">
+                        <h2 id="currentUserHandle">prajwal_shobha</h2>
+                        <p id="currentUserPresence">Active now</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="icon-btn" title="New Message" id="newMessageBtn">
+                        <i class="far fa-edit" aria-hidden="true"></i><span class="visually-hidden">New Message</span>
+                    </button>
+                    <button class="icon-btn" title="Menu" id="menuBtn">
+                        <i class="fas fa-ellipsis-v" aria-hidden="true"></i><span class="visually-hidden">Menu</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                    <input type="text" placeholder="Search" id="searchInput" aria-label="Search conversations">
+                </div>
+            </div>
+            
+            <ul class="conversations-list" id="conversationsList" aria-label="Conversations">
+                <!-- Conversations populated by JavaScript -->
+            </ul>
+        </div>
+
+        <!-- Right Side - Chat Area -->
+    <div class="chat-area chat-panel">
+            <div class="empty-chat" id="emptyChat">
+                <div class="empty-chat-icon" aria-hidden="true">
+                    <i class="far fa-comments"></i>
+                </div>
+                <h2>Your Messages</h2>
+                <p>Send private messages to a friend or group.</p>
+                <button class="start-chat-btn" id="startChatBtn">Send Message</button>
+            </div>
+
+            <div class="chat-interface" id="chatInterface" hidden>
+                <div class="chat-header">
+                    <div class="chat-user" id="activeChatUserBlock">
+                        <div class="chat-avatar" id="currentChatAvatar" aria-hidden="true"></div>
+                        <div class="chat-user-info">
+                            <div class="chat-user-name" id="currentChatUser"></div>
+                            <div class="chat-user-status" id="currentChatStatus"></div>
+                        </div>
+                    </div>
+                    <div class="chat-actions">
+                        <button class="icon-btn" title="Video Call" id="videoCallBtn">
+                            <i class="fas fa-video" aria-hidden="true"></i><span class="visually-hidden">Video Call</span>
+                        </button>
+                        <button class="icon-btn" title="Audio Call" id="audioCallBtn">
+                            <i class="fas fa-phone" aria-hidden="true"></i><span class="visually-hidden">Audio Call</span>
+                        </button>
+                        <button class="icon-btn" title="Info" id="infoBtn">
+                            <i class="fas fa-info-circle" aria-hidden="true"></i><span class="visually-hidden">Info</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="messages-area" id="messagesArea" aria-live="polite" aria-label="Messages thread">
+                    <!-- Messages populated here -->
+                </div>
+
+                <div class="message-input-area">
+                    <form class="message-input-container" id="messageForm" autocomplete="off" aria-label="Send message">
+                        <button type="button" class="icon-btn attachment-btn" title="Add Attachment" id="attachBtn">
+                            <i class="fas fa-plus-circle" aria-hidden="true"></i><span class="visually-hidden">Add Attachment</span>
+                        </button>
+                        <input type="text" class="message-input" placeholder="Message..." id="messageInput" aria-label="Message input" required>
+                        <button type="button" class="icon-btn emoji-btn" title="Emoji" id="emojiBtn">
+                            <i class="far fa-smile" aria-hidden="true"></i><span class="visually-hidden">Emoji</span>
+                        </button>
+                        <button type="submit" class="icon-btn send-btn" id="sendBtn" disabled aria-label="Send message">
+                            <i class="fas fa-paper-plane" aria-hidden="true"></i><span class="visually-hidden">Send</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="message.js"></script>
+</body>
+</html>

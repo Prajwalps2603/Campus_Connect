@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+	<title>Follow Requests</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+	<style>
+		body{margin:0; font:14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background:#0e1114; color:#e6edf3;}
+		.wrap{max-width:800px; margin:2rem auto; padding:0 1rem;}
+		.panel{background:#14181d; border:1px solid #232b33; border-radius:12px; padding:1rem;}
+		.req{display:flex; align-items:center; gap:.75rem; padding:.6rem 0; border-bottom:1px solid #1f252b;}
+		.req:last-child{border-bottom:none;}
+		.avatar{width:40px; height:40px; border-radius:10px; background:#222;}
+		.meta{flex:1;}
+		.meta h4{margin:0; font-size:.9rem;}
+		.meta p{margin:.15rem 0 0; font-size:.75rem; color:#9eb0bf;}
+		.btn{background:#1f2730; color:#d9e2ea; border:1px solid #2a3541; border-radius:8px; padding:.4rem .7rem; font-size:.75rem; cursor:pointer;}
+		.btn:hover{background:#24303a;}
+		.btn.reject{background:#2a1f1f; border-color:#3b2a2a; color:#f0d8d8;}
+		.btn.reject:hover{background:#352424;}
+	</style>
+</head>
+<body>
+	<div class="wrap">
+		<h2>Follow Requests</h2>
+		<div class="panel">
+			<div id="requestsList"></div>
+		</div>
+	</div>
+	<script>
+		const API = (location.origin && location.origin.includes('localhost:5000')) ? location.origin : 'http://localhost:5000';
+		function ensureToastHost(){ let h=document.getElementById('toastHost'); if(!h){ h=document.createElement('div'); h.id='toastHost'; h.style.cssText='position:fixed; top:10px; left:50%; transform:translateX(-50%); z-index:9999; display:flex; flex-direction:column; gap:8px;'; document.body.appendChild(h); } return h; }
+		function showToast(msg){ const host=ensureToastHost(); const t=document.createElement('div'); t.textContent=msg; t.style.cssText='background:#111b24; color:#dbe7f3; border:1px solid #1f2b35; padding:.55rem .8rem; border-radius:10px; box-shadow:0 8px 28px rgba(0,0,0,.35); opacity:0; transform:translateY(-6px); transition:opacity .2s, transform .2s;'; host.appendChild(t); requestAnimationFrame(()=>{ t.style.opacity='1'; t.style.transform='translateY(0)'; }); setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateY(-6px)'; setTimeout(()=> t.remove(), 250); }, 3000); }
+		function auth(){ const t=localStorage.getItem('authToken'); return t? {'Authorization':'Bearer '+t} : {}; }
+		async function load(){
+			try {
+				const r = await fetch(API + '/api/follow/requests', { headers: auth() });
+				const d = await r.json();
+				const list = d?.requests || [];
+				const box = document.getElementById('requestsList');
+				if(!list.length){ box.innerHTML = '<p style="opacity:.8;">No pending requests.</p>'; return; }
+				box.innerHTML = list.map(x=>`<div class="req" data-id="${x.id}"><img class="avatar" src="https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(x.username)}" alt="${x.username}"><div class="meta"><h4>@${x.username}</h4><p>${x.full_name||''}</p></div><button class="btn accept" data-acc="${x.id}">Accept</button><button class="btn reject" data-rej="${x.id}">Reject</button></div>`).join('');
+			} catch { showToast('Failed to load requests'); }
+		}
+		document.addEventListener('click', async (e)=>{
+			const acc = e.target.closest('[data-acc]');
+			const rej = e.target.closest('[data-rej]');
+			if(acc){
+				const id = acc.getAttribute('data-acc');
+				try { await fetch(API + '/api/follow/accept/'+id, { method:'POST', headers: auth() }); document.querySelector(`.req[data-id="${id}"]`)?.remove(); showToast('Accepted request'); } catch { showToast('Failed to accept'); }
+			} else if(rej){
+				const id = rej.getAttribute('data-rej');
+				try { await fetch(API + '/api/follow/'+id, { method:'DELETE', headers: auth() }); document.querySelector(`.req[data-id="${id}"]`)?.remove(); showToast('Declined request'); } catch { showToast('Failed to decline'); }
+			}
+		});
+		load();
+	</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+:root { --sk-bg:#141a20; --sk-shimmer:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.08), rgba(255,255,255,0)); }
+body.loading .real-content { visibility:hidden; }
+body.loading .skeleton-overlay { display:block; }
+.skeleton-overlay { display:none; animation:fadeIn .3s ease; }
+@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+.skel-stack { display:flex; flex-direction:column; gap:1rem; }
+.skel-row { display:flex; gap:.9rem; align-items:flex-start; }
+.skel-card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:.85rem; }
+.skel-card { aspect-ratio:16/9; border-radius:14px; position:relative; overflow:hidden; background:var(--sk-bg); }
+.skel-bar { height:12px; background:var(--sk-bg); border-radius:6px; position:relative; overflow:hidden; }
+.skel-bar.tall { height:18px; }
+.skel-avatar { width:48px; height:48px; border-radius:14px; background:var(--sk-bg); position:relative; overflow:hidden; }
+.skel-thumb { width:100%; aspect-ratio:16/9; border-radius:12px; background:var(--sk-bg); position:relative; overflow:hidden; }
+.skel-pill { height:28px; border-radius:30px; background:var(--sk-bg); width:90px; position:relative; overflow:hidden; }
+.skel-wide { width:100%; }
+.w-30 { width:30%; } .w-40 { width:40%; } .w-50 { width:50%; } .w-60 { width:60%; } .w-70 { width:70%; } .w-80 { width:80%; } .w-25 { width:25%; }
+/* Shimmer */
+.skel-bar:after, .skel-avatar:after, .skel-thumb:after, .skel-card:after, .skel-pill:after { content:""; position:absolute; inset:0; background:var(--sk-shimmer); animation:shimmer 1.35s linear infinite; transform:translateX(-100%); }
+@keyframes shimmer { 100% { transform:translateX(100%); } }
+/* Reduced motion (JS adds .reduced-motion on <html>) */
+.reduced-motion .skel-bar:after, 
+.reduced-motion .skel-avatar:after, 
+.reduced-motion .skel-thumb:after, 
+.reduced-motion .skel-card:after, 
+.reduced-motion .skel-pill:after { animation:none; background:rgba(255,255,255,0.06); }
+/* Page specific wrapper sizing helpers */
+.skeleton-overlay.feed { padding:1rem 0 2rem; }
+.skeleton-overlay.generic { padding:1.2rem 0 2rem; }

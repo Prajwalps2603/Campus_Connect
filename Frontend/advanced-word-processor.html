@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusWrite - Advanced Word Processor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="advanced-word-processor.css">
+</head>
+<body>
+    <!-- Cyber Grid Background -->
+    <div class="cyber-grid"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-file-code"></i>
+            </div>
+            <h1>NexusWrite</h1>
+        </div>
+
+        <div class="app-switcher">
+            <div class="app-slider" id="appSlider"></div>
+            <div class="app-option active" data-mode="word">
+                <i class="fas fa-file-word"></i>
+                <span>Word Processor</span>
+            </div>
+            <div class="app-option" data-mode="notepad">
+                <i class="fas fa-code"></i>
+                <span>Code Editor</span>
+            </div>
+        </div>
+
+        <div class="app-controls">
+            <button class="control-btn" data-action="save">
+                <i class="fas fa-save"></i> Save
+            </button>
+            <button class="control-btn" data-action="new">
+                <i class="fas fa-plus"></i> New
+            </button>
+            <button class="control-btn" data-action="run" id="runBtn">
+                <i class="fas fa-play"></i> Run
+            </button>
+            <button class="control-btn primary" data-action="export">
+                <i class="fas fa-download"></i> Export
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="ai-assistant">
+                <div class="ai-header">
+                    <div class="ai-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="ai-title">AI Writing Assistant</div>
+                </div>
+                <div class="ai-suggestions">
+                    <div class="ai-suggestion">
+                        <i class="fas fa-magic"></i>
+                        Improve writing clarity
+                    </div>
+                    <div class="ai-suggestion">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                        Expand this section
+                    </div>
+                    <div class="ai-suggestion">
+                        <i class="fas fa-sync-alt"></i>
+                        Rephrase for better flow
+                    </div>
+                    <div class="ai-suggestion">
+                        <i class="fas fa-check-circle"></i>
+                        Check grammar & spelling
+                    </div>
+                </div>
+            </div>
+
+            <div class="recent-docs">
+                <div class="section-title">
+                    <i class="fas fa-clock"></i>
+                    Recent Documents
+                </div>
+                <div class="doc-item" data-id="1">
+                    <div class="doc-icon">
+                        <i class="fas fa-file-word"></i>
+                    </div>
+                    <div class="doc-info">
+                        <div class="doc-name">Project Nexus Proposal</div>
+                        <div class="doc-meta">
+                            <span>Today, 14:30</span>
+                            <span>• 2.4KB</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="doc-item" data-id="2">
+                    <div class="doc-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="doc-info">
+                        <div class="doc-name">API Integration Script</div>
+                        <div class="doc-meta">
+                            <span>Yesterday, 09:15</span>
+                            <span>• 5.7KB</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="doc-item" data-id="3">
+                    <div class="doc-icon">
+                        <i class="fas fa-file-word"></i>
+                    </div>
+                    <div class="doc-info">
+                        <div class="doc-name">Quarterly Report Q3</div>
+                        <div class="doc-meta">
+                            <span>Oct 12, 2024</span>
+                            <span>• 12.8KB</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Editor Container -->
+        <div class="editor-container">
+            <!-- Mode Transition Effect -->
+            <div class="mode-transition" id="modeTransition"></div>
+
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <div class="toolbar-group">
+                    <div class="dropdown">
+                        <button class="dropdown-btn">
+                            <span>Inter</span> <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <div class="dropdown-item">
+                                <i class="fas fa-font"></i> Inter
+                            </div>
+                            <div class="dropdown-item">
+                                <i class="fas fa-font"></i> JetBrains Mono
+                            </div>
+                            <div class="dropdown-item">
+                                <i class="fas fa-font"></i> SF Pro Display
+                            </div>
+                            <div class="dropdown-item">
+                                <i class="fas fa-font"></i> Segoe UI
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="dropdown-btn">
+                            <span>14px</span> <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <div class="dropdown-item">12px</div>
+                            <div class="dropdown-item">14px</div>
+                            <div class="dropdown-item">16px</div>
+                            <div class="dropdown-item">18px</div>
+                            <div class="dropdown-item">20px</div>
+                            <div class="dropdown-item">24px</div>
+                        </div>
+                    </div>
+                    <div class="dropdown language-selector" id="languageSelector">
+                        <button class="dropdown-btn">
+                            <span id="currentLanguage">C++</span> <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <div class="dropdown-item" data-lang="cpp">C++</div>
+                            <div class="dropdown-item" data-lang="c">C</div>
+                            <div class="dropdown-item" data-lang="python3">Python</div>
+                            <div class="dropdown-item" data-lang="java">Java</div>
+                            <div class="dropdown-item" data-lang="javascript">JavaScript</div>
+                            <div class="dropdown-item" data-lang="php">PHP</div>
+                            <div class="dropdown-item" data-lang="ruby">Ruby</div>
+                            <div class="dropdown-item" data-lang="go">Go</div>
+                            <div class="dropdown-item" data-lang="csharp">C#</div>
+                            <div class="dropdown-item" data-lang="kotlin">Kotlin</div>
+                            <div class="dropdown-item" data-lang="swift">Swift</div>
+                            <div class="dropdown-item" data-lang="rust">Rust</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="toolbar-group">
+                    <button class="tool-btn" title="Bold" data-tool="bold">
+                        <i class="fas fa-bold"></i>
+                    </button>
+                    <button class="tool-btn" title="Italic" data-tool="italic">
+                        <i class="fas fa-italic"></i>
+                    </button>
+                    <button class="tool-btn" title="Underline" data-tool="underline">
+                        <i class="fas fa-underline"></i>
+                    </button>
+                    <button class="tool-btn" title="Strikethrough" data-tool="strike">
+                        <i class="fas fa-strikethrough"></i>
+                    </button>
+                </div>
+
+                <div class="toolbar-group">
+                    <button class="tool-btn" title="Align Left" data-tool="align-left">
+                        <i class="fas fa-align-left"></i>
+                    </button>
+                    <button class="tool-btn" title="Align Center" data-tool="align-center">
+                        <i class="fas fa-align-center"></i>
+                    </button>
+                    <button class="tool-btn" title="Align Right" data-tool="align-right">
+                        <i class="fas fa-align-right"></i>
+                    </button>
+                    <button class="tool-btn" title="Justify" data-tool="align-justify">
+                        <i class="fas fa-align-justify"></i>
+                    </button>
+                </div>
+
+                <div class="toolbar-group">
+                    <button class="tool-btn" title="Bullet List" data-tool="list-ul">
+                        <i class="fas fa-list-ul"></i>
+                    </button>
+                    <button class="tool-btn" title="Numbered List" data-tool="list-ol">
+                        <i class="fas fa-list-ol"></i>
+                    </button>
+                    <button class="tool-btn" title="Undo" data-tool="undo">
+                        <i class="fas fa-undo"></i>
+                    </button>
+                    <button class="tool-btn" title="Redo" data-tool="redo">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                </div>
+
+                <div class="toolbar-group">
+                    <button class="tool-btn" title="Insert Image" data-tool="image">
+                        <i class="fas fa-image"></i>
+                    </button>
+                    <button class="tool-btn" title="Insert Link" data-tool="link">
+                        <i class="fas fa-link"></i>
+                    </button>
+                    <button class="tool-btn" title="Insert Table" data-tool="table">
+                        <i class="fas fa-table"></i>
+                    </button>
+                    <button class="tool-btn" title="Code Block" data-tool="code">
+                        <i class="fas fa-code"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Word Editor -->
+            <div id="word-editor" contenteditable="true">
+                <h1 class="welcome-title">Welcome to NexusWrite</h1>
+                <p>A futuristic word processor with advanced AI capabilities and a sleek, modern interface designed for productivity.</p>
+
+                <h2 class="features-title">Advanced Features:</h2>
+                <ul>
+                    <li>AI-powered writing assistance</li>
+                    <li>Real-time collaboration</li>
+                    <li>Advanced formatting options</li>
+                    <li>Code editing with syntax highlighting</li>
+                    <li>Dark/light theme switching</li>
+                    <li>Cloud synchronization</li>
+                    <li>Export to multiple formats</li>
+                </ul>
+
+                <p>Switch to <strong>Code Editor</strong> mode for programming tasks or stay in <strong>Word Processor</strong> mode for document creation.</p>
+            </div>
+
+            <!-- Notepad Editor -->
+            <textarea id="notepad-editor">// Welcome to Code Editor Mode
+
+#include <iostream>
+using namespace std;
+
+class NexusWrite {
+private:
+    string feature = "Advanced Code Editor";
+
+public:
+    void displayFeatures() {
+        cout << "=== NexusWrite Code Editor ===" << endl;
+        cout << "• Syntax Highlighting" << endl;
+        cout << "• Code Completion" << endl;
+        cout << "• Multiple Language Support" << endl;
+        cout << "• Git Integration" << endl;
+        cout << "• Terminal Access" << endl;
+        cout << "• Debugging Tools" << endl;
+    }
+};
+
+int main() {
+    NexusWrite editor;
+    editor.displayFeatures();
+    return 0;
+}
+
+// Start coding your next project...</textarea>
+
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div class="status-item">
+                    <i class="fas fa-keyboard"></i>
+                    <span>Word Count: <span class="word-count">187</span></span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-code-branch"></i>
+                    <span>Auto-save: <span class="status-active">Active</span></span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-bolt"></i>
+                    <span>Performance: <span class="status-optimal">Optimal</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="advanced-word-processor.js"></script>
+</body>
+</html>

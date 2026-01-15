@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Workbook — Campus Connect</title>
+  <link rel="stylesheet" href="workbook.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</head>
+<body>
+  <div class="page">
+    <!-- WORKBOOK NAVBAR -->
+    <div class="workbook-navbar glass">
+      <div class="left-section">
+        <button id="backBtn" class="btn btn-ghost glass back-btn" title="Back" aria-label="Go back" type="button"><i class="fas fa-arrow-left"></i></button>
+        <div class="brand">
+          <div class="logo"><i class="fas fa-book"></i></div>
+          <span>WorkBook</span>
+        </div>
+      </div>
+      <div class="workbook-options">
+        <button class="workbook-btn active" data-tool="notebook">Notebook</button>
+        <button class="workbook-btn" data-tool="word">Word</button>
+      </div>
+    </div>
+
+    <!-- TOOLS -->
+    <div class="tools">
+      <!-- NOTEBOOK TOOL -->
+      <div id="notebook" class="tool active">
+        <div class="notebook-toolbar">
+          <button class="tool-btn" onclick="formatText('bold')" title="Bold"><i class="fas fa-bold"></i></button>
+          <button class="tool-btn" onclick="formatText('italic')" title="Italic"><i class="fas fa-italic"></i></button>
+          <button class="tool-btn" onclick="formatText('underline')" title="Underline"><i class="fas fa-underline"></i></button>
+          <span class="separator"></span>
+          <button class="tool-btn" onclick="changeFontSize(12)" title="Font Size 12">12</button>
+          <button class="tool-btn" onclick="changeFontSize(14)" title="Font Size 14">14</button>
+          <button class="tool-btn" onclick="changeFontSize(16)" title="Font Size 16">16</button>
+          <button class="tool-btn" onclick="changeFontSize(18)" title="Font Size 18">18</button>
+          <span class="separator"></span>
+          <button class="tool-btn" onclick="newNote()" title="New Note"><i class="fas fa-plus"></i> New</button>
+          <button class="tool-btn" onclick="saveNote()" title="Save Note"><i class="fas fa-save"></i> Save</button>
+          <button class="tool-btn" onclick="loadNote()" title="Open Note"><i class="fas fa-folder-open"></i> Open</button>
+        </div>
+        <div class="notebook-content">
+          <div id="notebookEditor" contenteditable="true" class="notebook-editor">
+            Welcome to Notebook!
+
+            This is a simple text editor that works like Notepad.
+            You can type, format text, and save your notes.
+
+            Features:
+            • Bold, italic, underline formatting
+            • Font size changes
+            • Save and load notes (stored in browser)
+            • Simple and clean interface
+          </div>
+        </div>
+      </div>
+
+      <!-- WORD TOOL -->
+      <div id="word" class="tool">
+        <iframe src="advanced-word-processor.html" class="advanced-word-iframe" title="Advanced Word Processor"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2025 Campus Connect. All rights reserved.</p>
+  </footer>
+
+  <script src="workbook.js"></script>
+</body>
+</html>

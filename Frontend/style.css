@@ -1,0 +1,516 @@
+/* A* Mapping Reference (see index.html):
+    A0  Container outer layout
+    A11 Glass auth panel wrapper (.glass-container)
+    A1  Login form (default) / A1b Signup form (hidden)
+    A2  Form titles (.form-title)
+    A3  Logo & brand text (.logo, .logo-text)
+    A4  Social login area (.social-login & .social-icon)
+    A5  Input groups (.input-group)
+    A6  Primary submit buttons (.submit-btn)
+    A7  Divider line (.divider)
+    A8  Remember + forgot row (.remember-forgot)
+    A9  Terms agreement (.terms)
+    A10 Footer switch link (.form-footer)
+*/
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* Updated per request: use Comic Sans MS */
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+}
+
+/* A0: Page background & core layout */
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background: #000000;
+    color: #fff;
+}
+
+.container {
+    width: 100%;
+    max-width: 450px;
+}
+
+/* A11: Glass auth panel wrapper */
+.glass-container {
+    background: rgba(255, 255, 255, 0.118); /* adjusted per request */
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    padding: 40px;
+    color: white;
+    text-align: center;
+    transition: transform 260ms cubic-bezier(.2,.9,.3,1), box-shadow 260ms ease, background 260ms ease;
+}
+
+/* A3: Logo wrapper */
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    cursor: default;
+    transition: transform 260ms cubic-bezier(.2,.9,.3,1);
+    position: relative;
+}
+
+/* A3: Logo icon */
+.logo i {
+    font-size: 2.5rem;
+    margin-right: 15px;
+    color: #000; /* make cap black */
+    transition: transform 260ms cubic-bezier(.2,.9,.3,1), filter 260ms ease, color 260ms ease;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.35);
+}
+
+/* A3: Logo text */
+.logo-text {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    transition: color 220ms ease, transform 220ms ease;
+    position: relative; /* for underline positioning */
+    padding-bottom: 6px; /* space for underline */
+    /* Updated: gradient brand color (uses dark-theme accent vars when present) */
+    background: linear-gradient(115deg,var(--accent-purple,hsl(252, 67%, 36%)), var(--accent-pink,#d14bff));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* ================= Cosmic Dark Theme (Shared with Feed) ================= */
+body.dark-theme {
+    --bg-main:#07080b;
+    --bg-elev-1:#111318;
+    --bg-elev-2:#181b22;
+    --border-dark:rgba(255,255,255,0.07);
+    --text-main:#e6e9ef;
+    --text-dim:#9aa1af;
+    --accent-purple:#7755ff;
+    --accent-pink:#d14bff;
+    /* Darker cosmic background (reduced glow opacity, deeper base) */
+    background:
+        radial-gradient(circle at 70% 15%, rgba(119,85,255,0.12), transparent 54%),
+        radial-gradient(circle at 22% 85%, rgba(209,75,255,0.08), transparent 56%),
+        linear-gradient(170deg,#030406,#06070b 48%, #0a0d13 72%, #0d1017 100%);
+    color: var(--text-main);
+    position:relative;
+}
+body.dark-theme:before, body.dark-theme:after {content:""; position:fixed; width:420px; height:420px; pointer-events:none; filter:blur(120px); opacity:.42; z-index:-1; mix-blend-mode:screen;}
+body.dark-theme:before {top:-140px; right:-140px; background:radial-gradient(circle at center, rgba(155,95,255,0.45), rgba(119,85,255,0) 68%);} 
+body.dark-theme:after {bottom:-160px; left:-160px; background:radial-gradient(circle at center, rgba(209,75,255,0.35), rgba(209,75,255,0) 70%);} 
+
+/* (Animated logo styles removed per request to restore old effect) */
+
+/* A2: Form title */
+.form-title {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+.form {
+    display: none;
+}
+
+.form.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* A5: Input group wrapper */
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.118); /* unified with glass container */
+    color: white;
+    font-size: 1rem;
+    transition: box-shadow 220ms ease, background 220ms ease, transform 160ms ease;
+}
+
+.input-group input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.24); /* slightly brighter on focus */
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25), 0 0 0 2px rgba(255, 255, 255, 0.38);
+    transform: translateY(-2px);
+}
+
+/* keyboard focus visible styles */
+input:focus-visible, button:focus-visible, a:focus-visible {
+    outline: 3px solid rgba(255,209,102,0.25);
+    outline-offset: 2px;
+}
+
+.input-group input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* A8: Remember + Forgot row */
+.remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.remember {
+    display: flex;
+    align-items: center;
+}
+
+.remember input {
+    margin-right: 8px;
+}
+
+.forgot-link {
+    color: #000000; /* updated per request */
+    text-decoration: none;
+    font-weight: 700; /* made bold per request */
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
+/* Visibility options: center in one line */
+.visibility-options {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+}
+.visibility-options > div {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Remove default rectangular focus border on checkboxes for a cleaner look */
+input[type="checkbox"]:focus {
+    outline: none;
+    box-shadow: none;
+}
+/* Also avoid the global :focus-visible outline for these checkboxes */
+input[type="checkbox"]:focus-visible {
+    outline: none;
+}
+
+/* A6: Primary submit button */
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 220ms cubic-bezier(.2,.9,.3,1), box-shadow 220ms ease, background 220ms ease;
+    margin-bottom: 25px;
+}
+
+.submit-btn:hover {
+    background: rgba(255, 255, 255, 0.45);
+    transform: translateY(-3px) scale(1.01);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+}
+
+/* A7: Divider line */
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 25px 0;
+}
+
+.divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.divider span {
+    padding: 0 15px;
+    font-size: 0.9rem;
+}
+
+/* A4: Social login row */
+.social-login {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+/* A4: Social login individual icon */
+.social-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000; /* outer area black */
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    position: relative;
+    transition: transform 200ms cubic-bezier(.2,.9,.3,1), box-shadow 200ms ease, background 200ms ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.06);
+}
+
+.social-icon:hover {
+    transform: translateY(-6px) scale(1.06);
+    background: #000; /* remain black */
+    box-shadow: 0 10px 24px rgba(0,0,0,0.6), 0 0 0 2px rgba(255,255,255,0.08);
+}
+
+.social-icon i {
+    transition: transform 180ms ease, color 180ms ease;
+}
+
+/* size inline Google SVG similarly to font icons */
+.social-icon .google-g {
+    width: 22px;
+    height: 22px;
+    display: block;
+}
+
+/* All social icons unified black styling (inside and outside) */
+/* All icons: black circle container */
+.social-icon.google,
+.social-icon.facebook,
+.social-icon.instagram,
+.social-icon.x {
+    background: #000;
+}
+
+/* Brand glyph colors */
+.social-icon.google i { color: #4285F4; }
+.social-icon.facebook i { color: #1877F2; }
+.social-icon.x .x-logo { color: #fff; }
+
+/* Instagram gradient glyph */
+.social-icon.instagram i {
+    background: radial-gradient(circle at 30% 30%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* Hover brighten glyph slightly */
+.social-icon.google:hover i { filter: brightness(1.15); }
+.social-icon.facebook:hover i { filter: brightness(1.15); }
+.social-icon.x:hover .x-logo { filter: brightness(1.25); }
+.social-icon.instagram:hover i { filter: brightness(1.15); }
+
+/* subtle logo hover */
+.logo:hover {
+    transform: translateY(-3px) scale(1.02);
+}
+
+.logo:hover .logo-text {
+    transform: translateX(2px);
+}
+
+.logo:hover .logo i {
+    transform: rotate(-6deg) translateY(-3px) scale(1.05);
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.45));
+    color: #0a0a0a;
+}
+
+/* A3: Logo underline effect (center expand) */
+.logo-text::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    height: 3px;
+    width: 100%;
+    background: linear-gradient(90deg,#000 0%,#ffd166 50%,#000 100%);
+    border-radius: 2px;
+    opacity: 0.9;
+    transform: translateX(-50%) scaleX(0);
+    transform-origin: center;
+    transition: transform 420ms cubic-bezier(.25,.9,.3,1);
+}
+
+.logo:hover .logo-text::after {
+    transform: translateX(-50%) scaleX(1); /* expand from center */
+}
+
+/* elevate glass slightly on hover for pointer-enabled devices */
+@media (hover: hover) and (pointer: fine) {
+    .glass-container:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.32);
+        background: rgba(255, 255, 255, 0.118);
+    }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* A10: Footer switches */
+.form-footer {
+    text-align: center;
+}
+
+/* A12: Feed link wrapper */
+.feed-link-wrapper {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 8px;
+}
+
+.feed-link {
+    color: #ffd166;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    position: relative;
+    padding: 2px 4px;
+    transition: color 200ms ease;
+}
+
+.feed-link::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg,#000 0%,#ffd166 50%,#000 100%);
+    transform: translateX(-50%) scaleX(0);
+    transform-origin: center;
+    transition: transform 380ms cubic-bezier(.25,.9,.3,1);
+}
+
+.feed-link:hover::after {
+    transform: translateX(-50%) scaleX(1);
+}
+
+/* Alerts (success & error) */
+.alert { 
+    width:100%;
+    padding:12px 16px; 
+    border-radius:10px; 
+    margin-bottom:18px; 
+    font-size:0.95rem; 
+    text-align:left; 
+    font-weight:600; 
+    line-height:1.3; 
+    box-shadow:0 6px 16px rgba(0,0,0,0.25), inset 0 0 0 1px rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+}
+.alert.success { 
+    background:rgba(46, 204, 113, 0.18); 
+    color:#2ecc71; 
+    border:1px solid rgba(46,204,113,0.4);
+}
+.alert.error { 
+    background:rgba(231, 76, 60, 0.18); 
+    color:#e74c3c; 
+    border:1px solid rgba(231,76,60,0.45);
+}
+.is-hidden { display:none !important; }
+
+.feed-link:hover {
+    color: #ffe08a;
+}
+
+.form-footer a {
+    color: #000000;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.form-footer a:hover {
+    text-decoration: underline;
+}
+
+/* A9: Terms agreement block */
+.terms {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.terms input {
+    margin-right: 8px;
+    margin-top: 5px;
+}
+
+.terms label {
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+.terms a {
+    color: #000000;
+    text-decoration: none;
+}
+
+.terms a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .glass-container {
+        padding: 30px 20px;
+    }
+    
+    .logo-text {
+        font-size: 1.8rem;
+    }
+    
+    .logo i {
+        font-size: 2rem;
+    }
+    
+    .form-title {
+        font-size: 1.5rem;
+    }
+    
+    .social-login {
+        gap: 15px;
+    }
+    
+    .social-icon {
+        width: 45px;
+        height: 45px;
+    }
+}

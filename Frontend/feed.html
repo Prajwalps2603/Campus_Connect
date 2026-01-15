@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Connect - Feed</title>
+    <!-- Updated Font Awesome for X (Twitter) brand icon support -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="feed.css">
+    <link rel="stylesheet" href="skeleton.css">
+</head>
+<body class="dark-theme loading">
+    <div class="skeleton-overlay feed container">
+        <div class="skel-stack">
+            <div class="skel-row">
+                <div class="skel-avatar"></div>
+                <div class="skel-bar w-60"></div>
+            </div>
+            <div class="skel-card-grid">
+                <div class="skel-card"></div>
+                <div class="skel-card"></div>
+                <div class="skel-card"></div>
+                <div class="skel-card"></div>
+            </div>
+            <div class="skel-stack">
+                <div class="skel-row"><div class="skel-avatar"></div><div class="skel-bar w-50"></div></div>
+                <div class="skel-thumb"></div>
+                <div class="skel-bar w-70"></div>
+                <div class="skel-bar w-40"></div>
+            </div>
+            <div class="skel-stack">
+                <div class="skel-row"><div class="skel-avatar"></div><div class="skel-bar w-30"></div></div>
+                <div class="skel-thumb"></div>
+                <div class="skel-bar w-80"></div>
+                <div class="skel-bar w-50"></div>
+            </div>
+        </div>
+    </div>
+    <div class="real-content">
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content" id="headerContent">
+                <button class="hamburger" id="sidebarToggle" aria-label="Open menu" aria-controls="leftSidebar" aria-expanded="false" title="Menu">
+                    <span></span><span></span><span></span>
+                </button>
+                <div class="logo" aria-label="Campus Connect home">
+                    <i class="fas fa-graduation-cap" aria-hidden="true"></i>
+                    <span class="logo-animate" aria-label="Campus Connect brand name">Campus Connect</span>
+                </div>
+                <div class="header-actions" id="headerActions">
+                    <button class="chat-btn" id="chatBtn" aria-label="Open chats" title="Chats">
+                        <i class="fas fa-comments" aria-hidden="true"></i>
+                        <span class="badge" id="chatBadge" aria-label="Unread messages count">0</span>
+                    </button>
+                    <div class="user-profile" aria-label="Your profile">
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=40&h=40&fit=crop&crop=face" alt="Profile picture">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <div class="feed-layout">
+                <!-- Left Sidebar -->
+                <aside id="leftSidebar" class="sidebar primary-nav compact" aria-label="Primary navigation">
+                    <ul class="nav-stack innovative">
+                        <li><button class="nav-item" data-section="notifications" title="Notifications"><i class="fas fa-bell" aria-hidden="true"></i><span>Notifications</span><span class="nav-badge" id="notifBadge" hidden>0</span></button></li>
+                        <li><button class="nav-item" data-section="notes-projects" title="Notes/Projects" onclick="window.location.href='eduhub.html';"><i class="fas fa-book-open" aria-hidden="true"></i><span>Notes/Projects</span></button></li>
+                        <li><button class="nav-item" data-section="reels" title="Reels"><i class="fas fa-clapperboard" aria-hidden="true"></i><span>Reels</span></button></li>
+                        <li><button class="nav-item" data-section="create" title="Create"><i class="fas fa-circle-plus" aria-hidden="true"></i><span>Create</span></button></li>
+                        <li><button class="nav-item" data-section="search" title="Search"><i class="fas fa-magnifying-glass" aria-hidden="true"></i><span>Search</span></button></li>
+                        <!-- <li><button class="nav-item" data-section="trending" title="Trending"><i class="fas fa-arrow-trend-up" aria-hidden="true"></i><span>Trending</span></button></li> -->
+                        <li><button class="nav-item" data-section="events" title="Events"><i class="fas fa-calendar-days" aria-hidden="true"></i><span>Events</span></button></li>
+                        <li><button class="nav-item" data-section="colleges" title="Colleges"><i class="fas fa-building-columns" aria-hidden="true"></i><span>Colleges</span></button></li>
+                        <li><button class="nav-item" data-section="challenges" title="Challenges"><i class="fas fa-medal" aria-hidden="true"></i><span>Challenges</span></button></li>
+                        <li><button class="nav-item" data-section="sports" title="Sports"><i class="fas fa-futbol" aria-hidden="true"></i><span>Sports</span></button></li>
+                    </ul>
+                    <div class="nav-mini-footer" aria-label="Quick social and settings">
+                        <button class="mini-icon mini-effect mini-settings" type="button" title="Settings" aria-label="Settings">
+                            <i class="fas fa-cog" aria-hidden="true"></i>
+                        </button>
+                        <button class="mini-icon mini-effect mini-facebook" type="button" title="Facebook" aria-label="Facebook">
+                            <i class="fab fa-facebook-f" aria-hidden="true"></i>
+                        </button>
+                        <button class="mini-icon mini-effect mini-x" type="button" title="X" aria-label="X">
+                            <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+                        </button>
+                        <button class="mini-icon mini-effect mini-whatsapp" type="button" title="WhatsApp" aria-label="WhatsApp">
+                            <i class="fab fa-whatsapp" aria-hidden="true"></i>
+                        </button>
+                        <!-- Settings Popup -->
+                        <dialog class="settings-popup" id="settingsPopup" aria-label="Settings menu">
+                            <div class="settings-shell">
+                                <div class="settings-header main-header">
+                                    <h4>Settings &amp; Menu</h4>
+                                    <button class="close-settings" aria-label="Close settings" type="button">&times;</button>
+                                </div>
+                                <div class="settings-main" id="settingsMain">
+                                    <ul class="settings-list">
+                                        <li><button class="settings-item" data-action="profile"><i class="fas fa-user"></i><span>Profile Settings</span></button></li>
+                                        <li><button class="settings-item" data-action="security"><i class="fas fa-shield-alt"></i><span>Security &amp; Privacy</span></button></li>
+                                        <li><button class="settings-item" data-action="saved"><i class="fas fa-bookmark"></i><span>Saved</span></button></li>
+                                        <li><button class="settings-item" data-action="activity"><i class="fas fa-clock-rotate-left"></i><span>Your Activity</span></button></li>
+                                        <li><button class="settings-item" data-action="blocked"><i class="fas fa-ban"></i><span>Blocked</span></button></li>
+                                        <li><button class="settings-item" data-action="switch-account"><i class="fas fa-arrows-rotate"></i><span>Switch Account</span></button></li>
+                                        <li><button class="settings-item" data-action="add-account"><i class="fas fa-user-plus"></i><span>Add Account</span></button></li>
+                                        <li><button class="settings-item" data-action="about"><i class="fas fa-circle-info"></i><span>About</span></button></li>
+                                        <li class="current-user-display">
+                                            <div class="current-user-chip" title="Current account">
+                                                <i class="fas fa-user-circle" aria-hidden="true"></i>
+                                                <span id="currentUserSettingName">@user</span>
+                                            </div>
+                                        </li>
+                                        <li class="separator" aria-hidden="true"></li>
+                                        <li><button class="settings-item logout" data-action="logout"><i class="fas fa-right-from-bracket"></i><span>Log Out</span></button></li>
+                                    </ul>
+                                </div>
+                                <div class="settings-panel" id="settingsPanel" hidden>
+                                    <div class="settings-header panel-header">
+                                        <button class="back-settings" type="button" aria-label="Back to main"><i class="fas fa-arrow-left"></i></button>
+                                        <h4 id="settingsPanelTitle">Panel</h4>
+                                        <button class="close-settings" aria-label="Close settings" type="button">&times;</button>
+                                    </div>
+                                    <div class="panel-body" id="settingsPanelBody"></div>
+                                </div>
+                            </div>
+                        </dialog>
+                    </div>
+                </aside>
+
+                <!-- Feed Content -->
+                <div class="feed">
+                    <!-- Stories Bar -->
+                    <div class="stories-bar" aria-label="User stories">
+                        <div class="stories-scroll">
+                        <button class="story add-story" type="button" aria-label="Add story">
+                            <span class="ring">
+                                <img class="add-story-img" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&h=120&fit=crop&crop=face" alt="Your Story">
+                                <span class="plus-badge" aria-hidden="true">+</span>
+                            </span>
+                            <span class="label">Your Story</span>
+                        </button>
+
+                        <button class="story" type="button">
+                            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=120&h=120&fit=crop&crop=face" alt="Arjun Mehta">
+                            <span class="label">Arjun</span>
+                        </button>
+
+                        <button class="story" type="button">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=face" alt="Aisha Khan">
+                            <span class="label">Aisha</span>
+                        </button>
+
+                        <button class="story" type="button">
+                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=120&h=120&fit=crop&crop=face" alt="Rohan Gupta">
+                            <span class="label">Rohan</span>
+                        </button>
+
+                        <button class="story" type="button">
+                            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=120&h=120&fit=crop&crop=face" alt="Lina Patel">
+                            <span class="label">Lina</span>
+                        </button>
+                        <button class="story" type="button">
+                            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=120&h=120&fit=crop&crop=face" alt="Sarah Johnson">
+                            <span class="label">Sarah</span>
+                        </button>
+                        <button class="story" type="button">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=face" alt="Mike Chen">
+                            <span class="label">Mike</span>
+                        </button>
+                        <button class="story" type="button">
+                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=120&h=120&fit=crop&crop=face" alt="Emma Davis">
+                            <span class="label">Emma</span>
+                        </button>
+                        
+                        <button class="story" type="button">
+                            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=120&h=120&fit=crop&crop=face" alt="Priya Singh">
+                            <span class="label">Priya</span>
+                        </button>
+                        <button class="story" type="button">
+                            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=120&h=120&fit=crop&crop=face" alt="Priya Singh">
+                            <span class="label">Priya</span>
+                        </button>
+                        <button class="story" type="button">
+                            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=120&h=120&fit=crop&crop=face" alt="Priya Singh">
+                            <span class="label">Priya</span>
+                        </button>
+                        <button class="story" type="button">
+                            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=120&h=120&fit=crop&crop=face" alt="Priya Singh">
+                            <span class="label">Priya</span>
+                        </button>
+                        </div>
+                    </div>
+                    <!-- Create Post -->
+                    <div class="create-post">
+                        <div class="post-input">
+                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=40&h=40&fit=crop&crop=face" alt="You">
+                            <input type="text" placeholder="What's happening on campus?">
+                        </div>
+                        <div class="post-actions">
+                            <button class="action-btn">
+                                <i class="fas fa-image"></i> Photo
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-video"></i> Video
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-calendar"></i> Event
+                            </button>
+                            <button class="post-btn">Post</button>
+                        </div>
+                    </div>
+
+                    <!-- Feed Posts -->
+                    <div class="posts">
+                        <!-- Post 1 -->
+                        <div class="post">
+                            <div class="post-header">
+                                <div class="post-author">
+                                    <img src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=40&h=40&fit=crop&crop=face" alt="ABC College">
+                                    <div class="author-info">
+                                        <div class="author-top">
+                                            <h4>ABC College</h4>
+                                            <button class="follow-btn" type="button" aria-pressed="false">Follow</button>
+                                        </div>
+                                        <p>Engineering Department</p>
+                                    </div>
+                                </div>
+                                <button class="more-options" aria-label="Post options" title="Post options">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="post-content">
+                                <p>Secretly Training for India's Got Talent! 🎤 Our engineering students are preparing something amazing for the biggest talent show in the country. Stay tuned for the big reveal! #CampusTalent #IGT2024</p>
+                                <div class="post-image">
+                                    <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop" alt="Talent Show Preparation">
+                                </div>
+                            </div>
+                            <div class="post-interactions">
+                                <div class="engagement">
+                                    <button class="icon-btn like-toggle" type="button" aria-pressed="false" title="Like">
+                                        <i class="far fa-heart" aria-hidden="true"></i>
+                                    </button>
+                                    <span class="like-count" aria-label="245 likes">245</span>
+                                    <button class="icon-btn comment-toggle" type="button" title="Comments">
+                                        <i class="far fa-comment" aria-hidden="true"></i>
+                                    </button>
+                                    <span class="comment-count" aria-label="89 comments">89</span>
+                                    <button class="icon-btn share-toggle" type="button" title="Share">
+                                        <i class="far fa-share-square" aria-hidden="true"></i>
+                                    </button>
+                                    <span class="share-count" aria-label="34 shares">34</span>
+                                </div>
+                                <div class="comment-box" aria-label="Add a comment">
+                                    <input type="text" placeholder="Add a comment..." class="comment-input" />
+                                    <button class="send-comment" type="button" disabled>Post</button>
+                                </div>
+                                <ul class="comments-list">
+                                    <li class="comment-item">
+                                        <div class="comment-body">
+                                            <span class="comment-author">Priya</span>
+                                            <span class="comment-text">This looks awesome! Excited for the show 🎉</span>
+                                        </div>
+                                        <button class="mini-like" type="button" aria-pressed="false" title="Like comment">
+                                            <i class="far fa-heart" aria-hidden="true"></i>
+                                            <span class="mini-like-count">12</span>
+                                        </button>
+                                    </li>
+                                    <li class="comment-item">
+                                        <div class="comment-body">
+                                            <span class="comment-author">Mike</span>
+                                            <span class="comment-text">Can we get a teaser video? 😄</span>
+                                        </div>
+                                        <button class="mini-like" type="button" aria-pressed="false" title="Like comment">
+                                            <i class="far fa-heart" aria-hidden="true"></i>
+                                            <span class="mini-like-count">5</span>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Post 2 -->
+                        <div class="post">
+                            <div class="post-header">
+                                <div class="post-author">
+                                    <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face" alt="Sarah Johnson">
+                                    <div class="author-info">
+                                        <div class="author-top">
+                                            <h4>Sarah Johnson</h4>
+                                            <button class="follow-btn" type="button" aria-pressed="false">Follow</button>
+                                        </div>
+                                        <p>Computer Science Student</p>
+                                    </div>
+                                </div>
+                                <button class="more-options" aria-label="Post options" title="Post options">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="post-content">
+                                <p>Just finished my final year project - a campus navigation app using AR! So excited to present it at the tech fest next week. #FinalYearProject #AR #TechInnovation</p>
+                            </div>
+                            <div class="post-interactions">
+                                <div class="engagement">
+                                    <button class="icon-btn like-toggle" type="button" aria-pressed="false" title="Like">
+                                        <i class="far fa-heart" aria-hidden="true"></i>
+                                    </button>
+                                    <span class="like-count" aria-label="156 likes">156</span>
+                                    <button class="icon-btn comment-toggle" type="button" title="Comments">
+                                        <i class="far fa-comment" aria-hidden="true"></i>
+                                    </button>
+                                    <span class="comment-count" aria-label="42 comments">42</span>
+                                    <button class="icon-btn share-toggle" type="button" title="Share">
+                                        <i class="far fa-share-square" aria-hidden="true"></i>
+                                    </button>
+                                    <span class="share-count" aria-label="18 shares">18</span>
+                                </div>
+                                <div class="comment-box" aria-label="Add a comment">
+                                    <input type="text" placeholder="Add a comment..." class="comment-input" />
+                                    <button class="send-comment" type="button" disabled>Post</button>
+                                </div>
+                                <ul class="comments-list">
+                                    <li class="comment-item">
+                                        <div class="comment-body">
+                                            <span class="comment-author">Emma</span>
+                                            <span class="comment-text">Congrats! AR navigation is so useful on campus.</span>
+                                        </div>
+                                        <button class="mini-like" type="button" aria-pressed="false" title="Like comment">
+                                            <i class="far fa-heart" aria-hidden="true"></i>
+                                            <span class="mini-like-count">21</span>
+                                        </button>
+                                    </li>
+                                    <li class="comment-item">
+                                        <div class="comment-body">
+                                            <span class="comment-author">Alex</span>
+                                            <span class="comment-text">Will you open source it after fest?</span>
+                                        </div>
+                                        <button class="mini-like" type="button" aria-pressed="false" title="Like comment">
+                                            <i class="far fa-heart" aria-hidden="true"></i>
+                                            <span class="mini-like-count">3</span>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Sidebar (Dark Panels) -->
+                <aside class="sidebar right-sidebar dark-panels" aria-label="Trends and events sidebar">
+                    <div class="mega-panel" aria-label="Campus updates and schedules">
+                        <section class="mega-section trends-section" aria-labelledby="trendsTitle">
+                            <h3 id="trendsTitle" class="panel-title">Campus Trends</h3>
+                            <ul class="trend-list" aria-label="Trending hashtags">
+                                <li><button type="button" class="trend-item">#CampusLife</button></li>
+                                <li><button type="button" class="trend-item">#CanteenSamosa</button></li>
+                                <li><button type="button" class="trend-item">#ExamMood</button></li>
+                                <li><button type="button" class="trend-item">#FridayFeels</button></li>
+                            </ul>
+                        </section>
+                        <section class="mega-section events-section" aria-labelledby="eventsTitle">
+                            <h3 id="eventsTitle" class="panel-title">Upcoming Events</h3>
+                            <ul class="events-list" aria-label="Upcoming campus events">
+                                <li class="event-mini">
+                                    <div class="date-box">
+                                        <span class="day">15</span>
+                                        <span class="month">OCT</span>
+                                    </div>
+                                    <div class="event-info-mini">
+                                        <h4>Tech Fest 2924</h4>
+                                        <p>Main Auditorium</p>
+                                    </div>
+                                </li>
+                                <li class="event-mini">
+                                    <div class="date-box">
+                                        <span class="day">20</span>
+                                        <span class="month">OCT</span>
+                                    </div>
+                                    <div class="event-info-mini">
+                                        <h4>Cultural Night</h4>
+                                        <p>College Ground</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </section>
+                        <section class="mega-section matches-section" aria-labelledby="matchesTitle">
+                            <h3 id="matchesTitle" class="panel-title">Matches &amp; Tournaments</h3>
+                            <ul class="match-list" aria-label="Scheduled matches">
+                                <li class="match-item">
+                                    <div class="match-icon bgmi" aria-hidden="true"><i class="fas fa-bullseye"></i></div>
+                                    <div class="match-info">
+                                        <h4>BGMI Inter-College Qualifier</h4>
+                                        <p class="time">Today · 7:30 PM</p>
+                                        <div class="meta"><span>Lobby 3</span><span>Best of 3</span></div>
+                                    </div>
+                                    <button class="match-cta" type="button">Join</button>
+                                </li>
+                                <li class="match-item">
+                                    <div class="match-icon cricket" aria-hidden="true"><i class="fas fa-cricket"></i></div>
+                                    <div class="match-info">
+                                        <h4>Cricket Tournament Finals</h4>
+                                        <p class="time">Sat · 4:00 PM</p>
+                                        <div class="meta"><span>Main Ground</span><span>20 Overs</span></div>
+                                    </div>
+                                    <button class="match-cta" type="button">Details</button>
+                                </li>
+                            </ul>
+                        </section>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    </div>
+    <script src="skeleton.js"></script>
+    <script src="feed.js"></script>
+        <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
+        <div class="notifications-modal-backdrop" id="notificationsBackdrop" aria-hidden="true">
+            <div class="notifications-modal" role="dialog" aria-modal="true" aria-labelledby="notificationsTitle">
+                <button class="notif-close" id="notifCloseBtn" aria-label="Close notifications">&times;</button>
+                <div class="notifications-toolbar">
+                    <h3 id="notificationsTitle"><i class="fas fa-bell"></i> Notifications</h3>
+                    <div class="actions">
+                        <button class="notif-btn" id="markAllReadBtn" type="button"><i class="fas fa-check-double"></i> Mark all read</button>
+                        <button class="notif-btn primary" id="clearAllNotifBtn" type="button"><i class="fas fa-trash"></i> Clear</button>
+                    </div>
+                </div>
+                <ul class="notifications-list" id="notificationsList" aria-live="polite"></ul>
+            </div>
+        </div>
+</body>
+</html>

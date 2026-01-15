@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campus Connect - Search (Simulation)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    :root{ --bg:#0e1114; --panel:#14181d; --border:#232b33; --text:#e6edf3; --muted:#9db0bf; --accent:#2563eb; }
+    *{ box-sizing:border-box; }
+    body{ margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+    header{ position:sticky; top:0; z-index:10; background:rgba(14,17,20,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--border); }
+    .bar{ max-width:960px; margin:0 auto; display:flex; align-items:center; gap:.75rem; padding:.7rem 1rem; }
+    .brand{ display:flex; align-items:center; gap:.5rem; font-weight:700; }
+    .brand i{ color:#86b7ff; }
+    .spacer{ flex:1; }
+  .select{ background:#1a2128; color:var(--text); border:1px solid #27323c; border-radius:10px; padding:.45rem .6rem; }
+  .user-label{ display:flex; align-items:center; gap:.4rem; }
+  nav.topnav{ display:flex; gap:.4rem; }
+    nav button{ background:#1a2229; border:1px solid #27323b; color:#cfe0ee; padding:.45rem .8rem; border-radius:10px; cursor:pointer; font-weight:600; }
+    nav button.active{ background:linear-gradient(135deg, #2563eb, #4f46e5); border-color:transparent; color:#fff; }
+    main{ max-width:960px; margin:0 auto; padding:1rem; }
+    .panel{ background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:1rem; }
+    .search-wrap{ position:relative; }
+    .search-wrap i{ position:absolute; top:50%; left:1rem; transform:translateY(-50%); color:var(--muted); font-size:.9rem; }
+    #q{ width:100%; background:#1a2128; border:1px solid #242d35; padding:.7rem 1rem .7rem 2.6rem; border-radius:9999px; color:#fff; font-size:.95rem; outline:none; box-shadow:0 2px 10px rgba(0,0,0,.18); }
+    #q:hover{ background:#1c252d; } #q:focus{ border-color:#2f4254; background:#1d252d; box-shadow:0 4px 16px rgba(0,0,0,.22);}    
+    .results{ margin-top:1rem; display:grid; gap:.75rem; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); }
+    .card{ display:flex; align-items:center; gap:.8rem; padding:.85rem; background:#12161b; border:1px solid #202831; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,.14); transition:.25s; }
+    .card:hover{ background:#1a2128; border-color:#2a343d; box-shadow:0 6px 18px rgba(0,0,0,.28); transform:translateY(-2px); }
+    .avatar{ width:46px; height:46px; border-radius:12px; background:#222; flex-shrink:0; }
+    .meta h4{ margin:0; font-size:.9rem; } .meta p{ margin:.15rem 0 0; font-size:.78rem; color:var(--muted); }
+    .follow{ margin-left:auto; background:#1f2730; color:#d9e2ea; border:1px solid #2a3541; padding:.45rem .85rem; font-size:.75rem; font-weight:700; border-radius:10px; cursor:pointer; }
+    .follow[disabled]{ opacity:.75; cursor:default; }
+    .note{ color:var(--muted); margin-top:.6rem; font-size:.82rem; }
+    .hidden{ display:none; }
+    /* Toast */
+    #toastHost{ position:fixed; top:12px; left:50%; transform:translateX(-50%); z-index:1000; display:flex; flex-direction:column; gap:8px; }
+    .toast{ background:#111b24; color:#dbe7f3; border:1px solid #1f2b35; padding:.55rem .8rem; border-radius:10px; box-shadow:0 8px 28px rgba(0,0,0,.35); opacity:0; transform:translateY(-6px); transition:opacity .2s, transform .2s; }
+    .toast.show{ opacity:1; transform:translateY(0); }
+    /* Notifications */
+    .notif{ display:flex; align-items:center; gap:.75rem; padding:.6rem .2rem; border-bottom:1px solid #1f252b; }
+    .notif:last-child{ border-bottom:none; }
+    .notif .accept{ background:#234; color:#d8e5f0; border:1px solid #2a3b4a; border-radius:8px; padding:.35rem .6rem; font-size:.75rem; cursor:pointer; }
+    .notif .reject{ background:#281f1f; color:#f0d8d8; border:1px solid #3b2a2a; border-radius:8px; padding:.35rem .6rem; font-size:.75rem; cursor:pointer; }
+    .title{ margin:.2rem 0 1rem; }
+    .subtitle{ margin:1.2rem 0 .6rem; }
+  </style>
+  <script>
+    // --- Data & Storage helpers ---
+    const USERS = [
+      { username:'ps', name:'John Doe', avatar:'https://api.dicebear.com/7.x/identicon/svg?seed=ps' },
+      { username:'test2', name:'Jane Smith', avatar:'https://api.dicebear.com/7.x/identicon/svg?seed=test2' },
+      { username:'alpha', name:'Alpha User', avatar:'https://api.dicebear.com/7.x/identicon/svg?seed=alpha' },
+    ];
+    function loadCurrentUser(){ return localStorage.getItem('sim_current_user') || 'test1'; }
+    function saveCurrentUser(u){ localStorage.setItem('sim_current_user', u); }
+    function loadRequests(){ try { return JSON.parse(localStorage.getItem('followRequests')) || []; } catch { return []; } }
+    function saveRequests(arr){ localStorage.setItem('followRequests', JSON.stringify(arr)); }
+    function notify(toUser, message){ const key='notifications_'+toUser; const list = (function(){ try { return JSON.parse(localStorage.getItem(key))||[]; } catch { return []; } })(); list.unshift({ id:Date.now()+Math.random(), message, ts:Date.now(), read:false }); localStorage.setItem(key, JSON.stringify(list)); }
+    function readNotifications(user){ const key='notifications_'+user; const list = (function(){ try { return JSON.parse(localStorage.getItem(key))||[]; } catch { return []; } })(); list.forEach(n=>n.read=true); localStorage.setItem(key, JSON.stringify(list)); return list; }
+    function getNotifications(user){ const key='notifications_'+user; try { return JSON.parse(localStorage.getItem(key))||[]; } catch { return []; } }
+    function getFollowStatus(fromUser, toUser){
+      const req = loadRequests().find(r=>r.from===fromUser && r.to===toUser);
+      if(!req){
+        return 'none';
+      }
+      return req.status;
+    }
+    function setFollowStatus(fromUser, toUser, status){ const all = loadRequests(); const idx = all.findIndex(r=>r.from===fromUser && r.to===toUser); if(idx>=0){ all[idx].status = status; } else { all.push({ from:fromUser, to:toUser, status }); } saveRequests(all); }
+    // --- Toast ---
+    function ensureToastHost(){ let host=document.getElementById('toastHost'); if(!host){ host=document.createElement('div'); host.id='toastHost'; document.body.appendChild(host);} return host; }
+    function showToast(msg){ const host=ensureToastHost(); const t=document.createElement('div'); t.className='toast'; t.textContent=msg; host.appendChild(t); requestAnimationFrame(()=> t.classList.add('show')); setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=> t.remove(), 250); }, 3000); }
+  </script>
+</head>
+<body>
+  <header>
+    <div class="bar">
+      <div class="brand"><i class="fas fa-graduation-cap"></i> Campus Connect (Simulation)</div>
+      <div class="spacer"></div>
+      <label class="user-label">User:
+        <select id="userSel" class="select">
+          <option value="test1">test1</option>
+          <option value="ps">ps</option>
+        </select>
+      </label>
+      <nav class="topnav">
+        <button id="tabSearch" class="active" type="button"><i class="fas fa-magnifying-glass"></i> Search</button>
+        <button id="tabNotifs" type="button"><i class="fas fa-bell"></i> Notifications</button>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <section id="searchSection" class="panel">
+      <div class="search-wrap">
+        <i class="fas fa-magnifying-glass"></i>
+        <input id="q" type="search" placeholder="Search users by name or username" autocomplete="off" />
+      </div>
+      <p class="note">Try searching for: ps, test2, alpha</p>
+      <div id="results" class="results"></div>
+    </section>
+    <section id="notifSection" class="panel hidden">
+  <h3 class="title">Notifications</h3>
+      <div id="notifList"></div>
+  <h3 class="subtitle">Follow Requests For You</h3>
+      <div id="requestsList"></div>
+    </section>
+  </main>
+  <div id="toastHost"></div>
+  <script>
+    let currentUser = loadCurrentUser();
+    const userSel = document.getElementById('userSel');
+    userSel.value = currentUser;
+    function toastUnreadFor(user){
+      const items = getNotifications(user) || [];
+      const unread = items.filter(n=> !n.read);
+      if(unread.length){
+        unread.forEach(n=> showToast(n.message));
+        readNotifications(user);
+      }
+    }
+    userSel.addEventListener('change', ()=>{ currentUser = userSel.value; saveCurrentUser(currentUser); renderAll(); toastUnreadFor(currentUser); showToast('Switched to '+currentUser); });
+
+    const q = document.getElementById('q');
+    const results = document.getElementById('results');
+    const notifList = document.getElementById('notifList');
+    const requestsList = document.getElementById('requestsList');
+    const tabSearch = document.getElementById('tabSearch');
+    const tabNotifs = document.getElementById('tabNotifs');
+    const searchSection = document.getElementById('searchSection');
+    const notifSection = document.getElementById('notifSection');
+
+    function switchTab(which){
+      if(which==='search'){
+        tabSearch.classList.add('active'); tabNotifs.classList.remove('active');
+        searchSection.classList.remove('hidden'); notifSection.classList.add('hidden');
+      } else {
+        tabNotifs.classList.add('active'); tabSearch.classList.remove('active');
+        notifSection.classList.remove('hidden'); searchSection.classList.add('hidden');
+      }
+    }
+    tabSearch.addEventListener('click', ()=> switchTab('search'));
+    tabNotifs.addEventListener('click', ()=> { switchTab('notifs'); renderNotifications(); });
+
+    function renderUsers(list){
+      results.innerHTML = '';
+      const frag = document.createDocumentFragment();
+      list.forEach(u => {
+        if(u.username === currentUser) return; // hide self
+        const card = document.createElement('div'); card.className='card'; card.dataset.user=u.username;
+        card.innerHTML = `<img class="avatar" src="${u.avatar}" alt="${u.username}">
+          <div class="meta"><h4>${u.name}</h4><p>@${u.username}</p></div>
+          <button class="follow" type="button">Follow</button>`;
+        const btn = card.querySelector('.follow');
+        updateFollowButton(btn, currentUser, u.username);
+        btn.addEventListener('click', ()=> handleFollowClick(btn, currentUser, u.username));
+        frag.appendChild(card);
+      });
+      results.appendChild(frag);
+    }
+
+    function updateFollowButton(btn, fromUser, toUser){
+      const st = getFollowStatus(fromUser, toUser); // none | pending | accepted
+      if(st==='pending'){ btn.textContent='Requested'; btn.disabled=true; btn.setAttribute('aria-pressed','true'); }
+      else if(st==='accepted'){ btn.textContent='Following'; btn.disabled=true; btn.setAttribute('aria-pressed','true'); }
+      else { btn.textContent='Follow'; btn.disabled=false; btn.setAttribute('aria-pressed','false'); }
+    }
+
+    function handleFollowClick(btn, fromUser, toUser){
+      // Create pending request
+      setFollowStatus(fromUser, toUser, 'pending');
+      notify(toUser, `@${fromUser} sent you a follow request`);
+      updateFollowButton(btn, fromUser, toUser);
+      showToast(`Follow request sent to @${toUser}`);
+    }
+
+    function renderNotifications(){
+      // Notifications for current user
+      const items = getNotifications(currentUser);
+      notifList.innerHTML = items.length ? '' : '<p class="note">No notifications.</p>';
+      items.forEach(n => {
+        const el = document.createElement('div'); el.className='notif';
+        el.innerHTML = `<i class="fas fa-bell" style="color:#86b7ff"></i><div style="flex:1;">${n.message}</div>`;
+        notifList.appendChild(el);
+      });
+      readNotifications(currentUser);
+      // Pending requests FOR current user
+      const reqs = loadRequests().filter(r=> r.to===currentUser && r.status==='pending');
+      requestsList.innerHTML = reqs.length ? '' : '<p class="note">No pending follow requests.</p>';
+      reqs.forEach(r => {
+        const from = r.from; const row = document.createElement('div'); row.className='notif';
+        row.innerHTML = `<img class="avatar" src="https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(from)}" alt="${from}">
+          <div style="flex:1;">@${from} requested to follow you</div>
+          <button class="accept" data-acc="${from}">Accept</button>
+          <button class="reject" data-rej="${from}">Reject</button>`;
+        requestsList.appendChild(row);
+      });
+    }
+
+    requestsList.addEventListener('click', (e)=>{
+      const acc = e.target.closest('[data-acc]');
+      const rej = e.target.closest('[data-rej]');
+      if(acc){
+        const from = acc.getAttribute('data-acc');
+        setFollowStatus(from, currentUser, 'accepted');
+        notify(from, `@${currentUser} accepted your follow request`);
+        showToast('Request accepted');
+        renderNotifications();
+      } else if(rej){
+        const from = rej.getAttribute('data-rej');
+        // remove the pending request
+        const all = loadRequests().filter(r=> !(r.from===from && r.to===currentUser && r.status==='pending'));
+        saveRequests(all);
+        notify(from, `@${currentUser} declined your follow request`);
+        showToast('Request declined');
+        renderNotifications();
+      }
+    });
+
+    q.addEventListener('input', ()=>{
+      const term = q.value.trim().toLowerCase();
+      const list = USERS.filter(u=> u.username.toLowerCase().includes(term) || u.name.toLowerCase().includes(term));
+      renderUsers(list);
+    });
+
+    function renderAll(){
+      // re-render current tab
+      if(!notifSection.classList.contains('hidden')) renderNotifications();
+      const term = q.value.trim().toLowerCase();
+      const list = USERS.filter(u=> u.username.toLowerCase().includes(term) || u.name.toLowerCase().includes(term));
+      renderUsers(list);
+    }
+
+    // Initial render
+    renderUsers(USERS);
+    // On initial load, show any unread notifications for the current user once
+    toastUnreadFor(currentUser);
+  </script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campus Connect - Events</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="feed.css" />
+  <link rel="stylesheet" href="events.css" />
+  <link rel="stylesheet" href="skeleton.css" />
+</head>
+<body class="dark-theme events-page loading">
+  <div class="skeleton-overlay generic container">
+    <div class="skel-stack">
+      <div class="skel-bar w-40 tall"></div>
+      <div class="skel-row">
+        <div class="skel-pill"></div>
+        <div class="skel-pill"></div>
+        <div class="skel-pill"></div>
+      </div>
+      <div class="skel-card-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr));">
+        <div class="skel-card"></div>
+        <div class="skel-card"></div>
+        <div class="skel-card"></div>
+        <div class="skel-card"></div>
+      </div>
+    </div>
+  </div>
+  <div class="real-content">
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <div class="logo" role="button" tabindex="0" onclick="window.location.href='feed.html'">
+          <i class="fas fa-graduation-cap"></i>
+          <span>Campus Connect</span>
+        </div>
+        <div class="header-actions">
+          <button class="chat-btn" aria-label="Back to Feed" title="Feed" onclick="window.location.href='feed.html'">
+            <i class="fas fa-house"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+  <main class="main">
+    <div class="container">
+      <div class="events-layout">
+        <aside class="sidebar primary-nav compact">
+          <ul class="nav-stack innovative">
+            <li><button class="nav-item" onclick="window.location.href='feed.html'"><i class="fas fa-home"></i><span>Feed</span></button></li>
+            <li><button class="nav-item active"><i class="fas fa-calendar-days"></i><span>Events</span></button></li>
+            <li><button class="nav-item" onclick="window.location.href='sports.html'"><i class="fas fa-futbol"></i><span>Sports</span></button></li>
+            <li><button class="nav-item" onclick="window.location.href='challenges.html'"><i class="fas fa-medal"></i><span>Challenges</span></button></li>
+            <li><button class="nav-item" onclick="window.location.href='trending.html'"><i class="fas fa-fire"></i><span>Trending</span></button></li>
+            <li><button class="nav-item" onclick="window.location.href='message.html'"><i class="fas fa-comments"></i><span>Messages</span></button></li>
+          </ul>
+        </aside>
+        <div class="events-content">
+          <div class="events-header">
+            <h1>All Campus Events</h1>
+            <div class="events-filters">
+              <select id="eventCategory" aria-label="Filter by category">
+                <option value="all">All Categories</option>
+                <option value="tech">Tech</option>
+                <option value="cultural">Cultural</option>
+                <option value="sports">Sports</option>
+                <option value="gaming">Gaming</option>
+              </select>
+              <select id="eventTime" aria-label="Filter by time">
+                <option value="upcoming">Upcoming</option>
+                <option value="today">Today</option>
+                <option value="week">This Week</option>
+                <option value="past">Past</option>
+              </select>
+              <input type="search" id="eventSearch" placeholder="Search events..." />
+              <button id="createEventBtn" class="create-event-btn"><i class="fas fa-circle-plus"></i> Create Event</button>
+            </div>
+          </div>
+          <div id="eventsGrid" class="events-grid" aria-live="polite"></div>
+        </div>
+        <aside class="sidebar right-sidebar dark-panels mini-hide" aria-label="Event quick info">
+          <div class="mega-panel">
+            <section class="mega-section">
+              <h3 class="panel-title">Highlights</h3>
+              <ul class="highlight-list" id="highlightList"></ul>
+            </section>
+            <section class="mega-section">
+              <h3 class="panel-title">Today</h3>
+              <ul class="today-list" id="todayList"></ul>
+            </section>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+  </div>
+  <script src="skeleton.js"></script>
+  <script src="events.js"></script>
+</body>
+</html>

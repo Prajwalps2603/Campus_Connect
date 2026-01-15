@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campus Connect - Notifications</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    :root{
+      --bg:#0e1114; --panel:#14181d; --panel-2:#10151a; --border:#1f252b; --border-2:#242d35; --text:#e6edf3; --sub:#8b9aa6;
+      --accent:#2563eb; --accent2:#4f46e5; --green:#22c55e; --red:#ef4444; --yellow:#f59e0b; --muted:#1a2027;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:400 14px/1.45 Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+    a{color:inherit;text-decoration:none}
+    /* Layout */
+    .shell{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+    .sidebar{border-right:1px solid var(--border);background:var(--panel-2);padding:16px;position:sticky;top:0;height:100vh}
+    .brand{display:flex;align-items:center;gap:.55rem;font-weight:800;letter-spacing:.4px;margin:4px 0 18px}
+    .brand i{color:#9bb7ff}
+    .nav{display:flex;flex-direction:column;gap:8px}
+    .nav .item{display:flex;align-items:center;gap:.65rem;padding:10px 12px;border-radius:10px;color:#b8c6d1;border:1px solid transparent;background:transparent;cursor:pointer}
+    .nav .item:hover{background:#162029;border-color:#1e2831;color:#dfe7ee}
+    .nav .item.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent;box-shadow:0 10px 18px -12px rgba(0,0,0,.7)}
+    /* Notifications styles */
+    .panel { background: rgba(14,18,38,.6); border: 1px solid rgba(46,58,102,.7); border-radius: 14px; box-shadow: var(--shadow); }
+    .notifications-list { padding: 8px; }
+    .notification-item { display: grid; grid-template-columns: 48px 1fr auto; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; border: 1px solid transparent; }
+    .notification-item + .notification-item { margin-top: 6px; }
+    .notification-item.unread { background: rgba(36,48,92,.35); border-color: #2b3a67; }
+    .notification-item.read { background: rgba(18,22,40,.6); border-color: #232d4e; opacity: .92; }
+    .avatar { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #3c55a2, #1a2d6e); display: grid; place-items: center; color: #eaf1ff; font-weight: 700; letter-spacing: .3px; border: 1px solid #33427a; }
+    .content { display: flex; flex-direction: column; gap: 4px; }
+    .content .line { font-size: 15px; }
+    .meta { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 12px; }
+    .actions { display: flex; gap: 8px; }
+    .btn { border: 1px solid var(--border); background: #121732; color: var(--text); padding: 8px 10px; border-radius: 10px; cursor: pointer; font-weight: 600; letter-spacing: .2px; transition: .15s ease; }
+    .btn:hover { filter: brightness(1.08); }
+    .btn-accept { background: #143221; border-color: #2a6c4a; color: #bff2cb; }
+    .btn-decline { background: #3a1515; border-color: #6c2a2a; color: #ffd4d4; }
+    .btn-mark { background: #0f1634; border-color: #334068; }
+    .status-chip { padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: .3px; border: 1px solid; }
+    .status-accepted { background: rgba(34,197,94,.12); color: #b7f7cc; border-color: #2a6c4a; }
+    .status-declined { background: rgba(239,68,68,.12); color: #ffc1c1; border-color: #6c2a2a; }
+    .status-info { background: rgba(91,140,255,.12); color: #cfe0ff; border-color: #334068; }
+    .empty { text-align: center; color: var(--muted); padding: 36px 16px; border-top: 1px dashed #2b3a67; margin-top: 8px; }
+    .toast-container { position: fixed; right: 20px; bottom: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 1000; }
+    .toast { background: #0f1530; border: 1px solid #334068; color: var(--text); padding: 10px 12px; border-radius: 10px; box-shadow: var(--shadow); }
+    .toast.success { border-color: #2a6c4a; }
+    .toast.error { border-color: #6c2a2a; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="page-header">
+      <div class="title-wrap">
+        <h1>Notifications</h1>
+        <span class="badge" id="unreadBadge">0</span>
+      </div>
+      <div class="filters" id="filters">
+        <button class="filter active" data-filter="all">All</button>
+        <button class="filter" data-filter="unread">Unread</button>
+        <button class="filter" data-filter="requests">Requests</button>
+      </div>
+    </header>
+
+    <section class="panel">
+      <div class="notifications-list" id="notificationsList" aria-live="polite"></div>
+    </section>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+        // ==========================
+        // Minimal auth utilities
+        // ==========================
+        function getToken() {
+          return localStorage.getItem('authToken') || localStorage.getItem('token') || '';
+        }
+        function authHeader(extra) {
+          const h = { 'Content-Type': 'application/json' };
+          const t = getToken();
+          if (t) h['Authorization'] = 'Bearer ' + t;
+          if (extra) Object.assign(h, extra);
+          return h;
+        }
+
+        // ==========================
+        // State
+        // ==========================
+        let currentNotifications = [];
+        let activeFilter = 'all';
+
+        // ==========================
+        // Toasts
+        // ==========================
+        function showToast(msg, type = 'success') {
+          const wrap = document.getElementById('toastContainer');
+          const div = document.createElement('div');
+          div.className = 'toast ' + (type === 'error' ? 'error' : 'success');
+          div.textContent = msg;
+          wrap.appendChild(div);
+          setTimeout(() => {
+            div.style.opacity = '0';
+            div.style.transform = 'translateY(4px)';
+            setTimeout(() => div.remove(), 220);
+          }, 2200);
+        }
+
+        // ==========================
+        // Helpers
+        // ==========================
+        function timeAgo(iso) {
+          if (!iso) return '';
+          const ts = new Date(iso);
+          const s = Math.floor((Date.now() - ts.getTime()) / 1000);
+          if (s < 60) return s + 's ago';
+          const m = Math.floor(s / 60);
+          if (m < 60) return m + 'm ago';
+          const h = Math.floor(m / 60);
+          if (h < 24) return h + 'h ago';
+          const d = Math.floor(h / 24);
+          return d + 'd ago';
+        }
+
+        function getUserInitial(name) {
+          if (!name) return '?';
+          const parts = String(name).trim().split(/\s+/);
+          const first = parts[0] ? parts[0][0] : '';
+          const last = parts[1] ? parts[1][0] : '';
+          return (first + last).toUpperCase() || name[0].toUpperCase();
+        }
+
+        function normalizeBackendData(n) {
+          return {
+            id: n.id,
+            type: n.type,
+            status: n.status || 'info',
+            from_user_id: n.from_user_id || n.sender_id || n.user_id || n.actor_id || null,
+            from_user_name: n.from_user_name || n.sender_name || n.username || n.name || 'User',
+            message: n.message || '',
+            is_read: typeof n.is_read === 'boolean' ? n.is_read : !!n.read,
+            created_at: n.created_at || n.timestamp || n.createdAt || n.created || null
+          };
+        }
+
+        // ==========================
+        // API
+        // ==========================
+        async function fetchNotifications(fetchAll = true) {
+          const url = '/api/notifications' + (fetchAll ? '?all=1' : '');
+          const res = await fetch(url, { headers: authHeader() });
+          if (!res.ok) throw new Error('Failed to fetch notifications');
+          const data = await res.json();
+          let list = [];
+          if (Array.isArray(data)) {
+            list = data;
+          } else if (Array.isArray(data.notifications)) {
+            list = data.notifications;
+          } else if (Array.isArray(data.items)) {
+            list = data.items;
+          }
+          return list.map(normalizeBackendData);
+        }
+
+        async function acceptRequest(notificationId) {
+          try {
+            const res = await fetch(`/api/notifications/${notificationId}/accept`, { method: 'POST', headers: authHeader() });
+            if (!res.ok) throw new Error('Failed to accept request');
+            showToast('Follow request accepted');
+            updateNotificationUI(notificationId, 'accepted');
+            updateNotificationBadge();
+            try {
+              localStorage.setItem('cc:notify:ping', String(Date.now()));
+            } catch (err) {
+              console.warn('Unable to write localStorage ping', err);
+            }
+          } catch (e) {
+            console.error(e);
+            showToast('Error accepting request', 'error');
+          }
+        }
+
+        async function declineRequest(notificationId) {
+          try {
+            const res = await fetch(`/api/notifications/${notificationId}/decline`, { method: 'POST', headers: authHeader() });
+            if (!res.ok) throw new Error('Failed to decline request');
+            showToast('Follow request declined');
+            updateNotificationUI(notificationId, 'declined');
+            updateNotificationBadge();
+            try {
+              localStorage.setItem('cc:notify:ping', String(Date.now()));
+            } catch (err) {
+              console.warn('Unable to write localStorage ping', err);
+            }
+          } catch (e) {
+            console.error(e);
+            showToast('Error declining request', 'error');
+          }
+        }
+
+        async function markAsRead(notificationId) {
+          try {
+            const res = await fetch(`/api/notifications/${notificationId}/read`, { method: 'POST', headers: authHeader() });
+            if (!res.ok) throw new Error('Failed to mark as read');
+            const idx = currentNotifications.findIndex(n => n.id === notificationId);
+            if (idx !== -1) currentNotifications[idx].is_read = true;
+            renderNotifications();
+            updateNotificationBadge();
+            try {
+              localStorage.setItem('cc:notify:ping', String(Date.now()));
+            } catch (err) {
+              console.warn('Unable to write localStorage ping', err);
+            }
+          } catch (e) {
+            console.error(e);
+            showToast('Error marking as read', 'error');
+          }
+        }
+
+        // ==========================
+        // Rendering
+        // ==========================
+        function buildMessage(n) {
+          if (n.message && n.message.trim().length > 0) return n.message;
+          if (n.type === 'follow_started') return `${n.from_user_name} started following you`;
+          if (n.type === 'follow_request_accepted') return `${n.from_user_name} accepted your follow request`;
+          if (n.type === 'follow_request_declined') return `${n.from_user_name} declined your follow request`;
+          return `${n.from_user_name} sent you a follow request`;
+        }
+
+        function buildRightSide(n) {
+          if (n.type === 'follow_request' && (n.status === 'pending' || !n.status)) {
+            return `
+              <div class="actions">
+                <button class="btn btn-accept" data-action="accept" data-id="${n.id}">Accept</button>
+                <button class="btn btn-decline" data-action="decline" data-id="${n.id}">Decline</button>
+              </div>`;
+          }
+          if (n.type === 'follow_request_accepted' || n.status === 'accepted') {
+            return '<span class="status-chip status-accepted">Accepted</span>';
+          }
+          if (n.type === 'follow_request_declined' || n.status === 'declined') {
+            return '<span class="status-chip status-declined">Declined</span>';
+          }
+          return '<span class="status-chip status-info">Info</span>';
+        }
+
+        function renderNotificationItem(n) {
+          const isUnread = !n.is_read;
+          const baseClass = 'notification-item ' + (isUnread ? 'unread' : 'read');
+          const right = buildRightSide(n);
+          const message = buildMessage(n);
+
+          const markBtn = isUnread ? `<button class="btn btn-mark" data-action="mark" data-id="${n.id}">Mark as read</button>` : '';
+
+          return `
+            <div class="${baseClass}" data-id="${n.id}">
+              <div class="avatar">${getUserInitial(n.from_user_name)}</div>
+              <div class="content">
+                <div class="line">${message}</div>
+                <div class="meta"><span>${timeAgo(n.created_at)}</span>${markBtn ? ` ${markBtn}` : ''}</div>
+              </div>
+              <div class="right">${right}</div>
+            </div>
+          `;
+        }
+
+        function applyFilter(list) {
+          if (activeFilter === 'unread') return list.filter(n => !n.is_read);
+          if (activeFilter === 'requests') return list.filter(n => n.type === 'follow_request' && (n.status === 'pending' || !n.status));
+          return list;
+        }
+
+        function renderNotifications() {
+          const listEl = document.getElementById('notificationsList');
+          const filtered = applyFilter(currentNotifications);
+          if (filtered.length === 0) {
+            listEl.innerHTML = '<div class="empty">No notifications</div>';
+            return;
+          }
+          listEl.innerHTML = filtered.map(renderNotificationItem).join('');
+        }
+
+        function updateNotificationUI(notificationId, newStatus) {
+          const idx = currentNotifications.findIndex(n => n.id === notificationId);
+          if (idx !== -1) {
+            currentNotifications[idx].status = newStatus;
+            currentNotifications[idx].is_read = true; // action implies read
+            renderNotifications();
+          }
+        }
+
+        function updateNotificationBadge() {
+          const badge = document.getElementById('unreadBadge');
+          const unread = currentNotifications.filter(n => !n.is_read).length;
+          badge.textContent = String(unread);
+        }
+
+        // ==========================
+        // Events
+        // ==========================
+        function setupFilters() {
+          const wrap = document.getElementById('filters');
+          wrap.addEventListener('click', (e) => {
+            const btn = e.target.closest('button.filter');
+            if (!btn) return;
+            wrap.querySelectorAll('.filter').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeFilter = btn.dataset.filter;
+            renderNotifications();
+          });
+        }
+
+        function setupListEvents() {
+          const list = document.getElementById('notificationsList');
+          list.addEventListener('click', (e) => {
+            const acceptBtn = e.target.closest('button[data-action="accept"]');
+            const declineBtn = e.target.closest('button[data-action="decline"]');
+            const markBtn = e.target.closest('button[data-action="mark"]');
+            if (acceptBtn) {
+              const id = Number(acceptBtn.dataset.id);
+              acceptRequest(id);
+            } else if (declineBtn) {
+              const id = Number(declineBtn.dataset.id);
+              declineRequest(id);
+            } else if (markBtn) {
+              const id = Number(markBtn.dataset.id);
+              markAsRead(id);
+            }
+          });
+        }
+
+        // ==========================
+        // Real-time polling
+        // ==========================
+        async function startRealTimePolling() {
+          try {
+            // initial load
+            currentNotifications = await fetchNotifications(true);
+            renderNotifications();
+            updateNotificationBadge();
+          } catch (e) {
+            console.error(e);
+            showToast('Unable to load notifications', 'error');
+          }
+
+          setInterval(async () => {
+            try {
+              const latest = await fetchNotifications(true);
+              // detect actually new
+              const currentIds = new Set(currentNotifications.map(n => n.id));
+              const actuallyNew = latest.filter(n => !currentIds.has(n.id));
+
+              // Always replace state and refresh UI/badge
+              currentNotifications = latest;
+              renderNotifications();
+              updateNotificationBadge();
+
+              // Toast only for new follow requests
+              if (actuallyNew.some(n => n.type === 'follow_request' && (n.status === 'pending' || !n.status))) {
+                showToast('New follow request received!');
+              }
+            } catch (e) {
+              console.error(e);
+            }
+          }, 5000);
+        }
+
+        // ==========================
+        // Init
+        // ==========================
+        (function init() {
+          setupFilters();
+          setupListEvents();
+          startRealTimePolling();
+          try {
+            window.addEventListener('storage', async (e) => {
+              if (e.key === 'cc:notify:ping') {
+                try {
+                  const latest = await fetchNotifications(true);
+                  currentNotifications = latest;
+                  renderNotifications();
+                  updateNotificationBadge();
+                } catch (err) {
+                  console.error(err);
+                }
+              }
+            });
+          } catch (err) {
+            console.warn('Storage event listener unavailable', err);
+          }
+        })();
+  </script>
+</body>
+</html>
